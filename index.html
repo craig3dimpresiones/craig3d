@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Craig 3D</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>.seccion { display: none; } .activa { display: block; }</style>
+</head>
+<body class="bg-slate-100 pb-10">
+    <header class="bg-slate-900 text-white p-6 text-center border-b-4 border-red-600 font-black uppercase italic">Craig 3D</header>
+    <div class="max-w-md mx-auto p-4">
+        <div id="sec-inicio" class="seccion activa space-y-4">
+            <button onclick="ver('calc')" class="w-full bg-white p-6 rounded-3xl shadow-xl border-b-8 border-blue-500 font-black uppercase text-left">🧮 Calculadora</button>
+            <button onclick="ver('cata')" class="w-full bg-white p-6 rounded-3xl shadow-xl border-b-8 border-purple-500 font-black uppercase text-left">🖼️ Catálogo</button>
+        </div>
+        <div id="sec-calc" class="seccion bg-white p-6 rounded-3xl shadow-xl space-y-4">
+            <button onclick="ver('inicio')" class="text-blue-500 font-bold text-xs uppercase">← Volver</button>
+            <input type="text" id="nombre" placeholder="Nombre pieza" class="w-full border-2 p-4 rounded-2xl font-bold">
+            <div class="grid grid-cols-2 gap-4">
+                <input type="number" id="gramos" placeholder="Gramos" class="border-2 p-4 rounded-2xl text-center font-bold">
+                <input type="number" id="minutos" placeholder="Minutos" class="border-2 p-4 rounded-2xl text-center font-bold">
+            </div>
+            <div class="bg-blue-50 border-2 border-dashed p-4 rounded-2xl text-center" onclick="document.getElementById('foto').click()">
+                <input type="file" id="foto" accept="image/*" capture="environment" class="hidden">
+                <span id="txtFoto" class="font-black text-blue-600 uppercase">📸 Foto</span>
+            </div>
+            <div class="bg-slate-900 p-6 rounded-3xl text-center"><p id="precioFinal" class="text-5xl font-black text-green-400">$0</p></div>
+            <button onclick="guardar()" id="btnG" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase">Guardar</button>
+        </div>
+        <div id="sec-cata" class="seccion space-y-4">
+            <button onclick="ver('inicio')" class="text-blue-500 font-bold text-xs uppercase">← Volver</button>
+            <div id="grid-productos" class="space-y-4"></div>
+        </div>
+    </div>
+    <script>
+        const SB_URL = 'https://acsxhpotasjilafhqmoz.supabase.co'; 
+        const SB_KEY = 'sb_publishable_sDXHl5jEwIRktVlJbIH2Lg_EYYMd_bF';
+        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+        let fotoFinal = "";
+        function ver(id) { document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa')); document.getElementById('sec-' + id).classList.add('activa'); if(id === 'cata') cargarCata(); }
+        document.getElementById('foto').onchange = (e) => {
+            const r = new FileReader(); r.onload = (ev) => {
+                const i = new Image(); i.onload = () => {
+                    const c = document.createElement('canvas'); const s = 600 / i.width;
+                    c.width = 600; c.height = i.height * s;
+                    const ctx = c.getContext('2d'); ctx.drawImage(i, 0, 0, c.width, c.height);
+                    fotoFinal = c.toDataURL('image/jpeg', 0.6);
+                    document.getElementById('txtFoto').innerText = "✅ LISTA";
+                }; i.src = ev.target.result;
+            }; r.readAsDataURL(e.target.files[0]);
+        };
+        async function guardar() {
+            const n = document.getElementById('nombre').value;
+            const p = parseInt(document.getElementById('precioFinal').innerText.replace('$',''));
+            if(!n || !fotoFinal) return alert("Falta nombre o foto");
+            document.getElementById('btnG').innerText = "SUBIENDO...";
+            const { error } = await supabaseClient.from('productos').insert([{ nombre: n, precio: p, imagen: fotoFinal }]);
+            if(!error) location.reload();
+        }
+        async function cargarCata() {
+            const { data } = await supabaseClient.from('productos').select('*').order('id', {ascending: false});
+            document.getElementById('grid-productos').innerHTML = data.map(p => `<div class="bg-white p-4 rounded-3xl shadow flex items-center gap-4"><img src="${p.imagen}" class="w-16 h-16 object-cover rounded-xl"><div class="flex-1 text-sm font-bold uppercase">${p.nombre}</div><div class="text-blue-600 font-black">$${p.precio}</div></div>`).join('');
+        }
+        document.addEventListener('input', () => {
+            const g = parseFloat(document.getElementById('gramos').value) || 0;
+            const m = parseFloat(document.getElementById('minutos').value) || 0;
+            document.getElementById('precioFinal').innerText = '$' + Math.round((g * 25) + (m * 4));
+        });
+    </script>
+</body>
+</html>
