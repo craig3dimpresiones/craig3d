@@ -7,123 +7,105 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body, html { overflow-x: hidden; min-height: 100%; -webkit-tap-highlight-color: transparent; background-color: #f1f5f9; }
+        body, html { min-height: 100%; background: #0f172a; color: white; margin:0; padding:0; }
         .seccion { display: none; } 
         .activa { display: block !important; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 150; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
+        input { color: black; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         .modal.open { display: flex; }
-        .admin-only { display: none !important; }
+        .admin-only { display: none; }
         body.is-admin .admin-only { display: block !important; }
-        body.is-admin .client-only { display: none !important; }
     </style>
 </head>
-<body class="font-sans text-slate-900">
+<body>
 
-    <header class="bg-slate-900 text-white p-6 flex justify-between items-center border-b-4 border-red-600 shadow-xl sticky top-0 z-50">
-        <h1 onclick="window.location.href=window.location.pathname" class="font-black text-xl italic uppercase tracking-tighter cursor-pointer">Craig <span class="text-red-600">3D</span></h1>
-        <div class="flex gap-3">
-            <button onclick="ver('config')" class="admin-only text-xl">⚙️</button>
-            <button id="btn-ir-login" onclick="ver('login')" class="client-only text-[10px] font-bold text-slate-400 uppercase border border-slate-700 px-3 py-1 rounded-full">Admin</button>
-            <button onclick="logout()" class="admin-only text-[10px] font-bold text-red-500 uppercase bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20">Salir</button>
+    <header class="p-5 bg-slate-900 border-b-2 border-red-600 flex justify-between items-center sticky top-0 z-50">
+        <h1 onclick="window.location.reload()" class="font-black italic uppercase text-xl">Craig <span class="text-red-600">3D</span></h1>
+        <div id="status-area">
+            <button onclick="ver('login')" id="btn-login-header" class="text-[10px] font-bold border border-slate-700 px-3 py-1 rounded-full">ADMIN</button>
+            <button onclick="logout()" class="admin-only text-[10px] font-bold text-red-500 bg-red-500/10 px-3 py-1 rounded-full">SALIR</button>
         </div>
     </header>
 
-    <main class="max-w-md mx-auto p-4 w-full">
-        
-        <div id="sec-login" class="seccion space-y-6 pt-10 text-center">
-            <h2 class="font-black text-2xl uppercase italic text-slate-800">Panel de Control</h2>
+    <main class="max-w-md mx-auto p-4">
+
+        <div id="sec-login" class="seccion space-y-6 pt-10">
+            <div class="text-center space-y-2">
+                <h2 class="text-2xl font-black italic uppercase">Panel de Control</h2>
+                <p class="text-slate-400 text-xs">Ingresá tus credenciales</p>
+            </div>
             <div class="space-y-3">
-                <input type="text" id="log-nombre" placeholder="Usuario" class="w-full p-4 rounded-2xl border-2 border-slate-200 outline-none focus:border-red-600 font-bold uppercase">
-                <input type="password" id="log-pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl border-2 border-slate-200 outline-none focus:border-red-600 font-bold">
-                <button onclick="ejecutarLogin()" id="btn-auth" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black uppercase shadow-lg active:scale-95 transition-all">Ingresar al Taller</button>
-                <button onclick="ver('cata')" class="text-slate-400 text-xs font-bold uppercase underline">Volver al Catálogo</button>
+                <input type="text" id="log-nombre" placeholder="USUARIO" class="w-full p-4 rounded-xl font-bold uppercase outline-none">
+                <input type="password" id="log-pass" placeholder="CONTRASEÑA" class="w-full p-4 rounded-xl font-bold outline-none">
+                <button onclick="ejecutarLogin()" id="btn-entrar-posta" class="w-full bg-red-600 text-white p-4 rounded-xl font-black uppercase shadow-lg hover:bg-red-700 transition-colors">
+                    Entrar al Taller
+                </button>
+                <button onclick="ver('cata')" class="w-full text-slate-500 text-xs font-bold uppercase py-2">Volver al Catálogo</button>
             </div>
         </div>
 
         <div id="sec-inicio" class="seccion admin-only space-y-4 pt-4">
-            <div class="bg-white p-4 rounded-2xl shadow-sm text-center border-l-4 border-red-600">
-                <p class="text-[10px] font-bold text-slate-400 uppercase italic">Operador:</p>
-                <p id="user-display" class="font-black text-slate-700 uppercase italic">---</p>
+            <div class="bg-slate-800 p-4 rounded-2xl border-l-4 border-red-600">
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Operador:</p>
+                <p id="user-display" class="font-black uppercase italic">---</p>
             </div>
-            <button onclick="ver('calc')" class="w-full bg-white p-6 rounded-3xl shadow-xl border-b-8 border-blue-500 font-black uppercase text-left flex justify-between items-center active:scale-95 transition-all">
-                <span>🧮 Nueva Cotización</span> <span class="text-blue-500 text-2xl">+</span>
+            <button onclick="ver('calc')" class="w-full bg-white text-slate-900 p-6 rounded-2xl font-black uppercase flex justify-between items-center">
+                <span>Nueva Cotización</span> <span>+</span>
             </button>
-            <button onclick="ver('cata')" class="w-full bg-white p-6 rounded-3xl shadow-xl border-b-8 border-purple-500 font-black uppercase text-left flex justify-between items-center active:scale-95 transition-all">
-                <span>🖼️ Ir al Catálogo</span> <span class="text-purple-500 text-2xl">➔</span>
+            <button onclick="ver('cata')" class="w-full bg-white text-slate-900 p-6 rounded-2xl font-black uppercase flex justify-between items-center">
+                <span>Ver Catálogo</span> <span>➔</span>
             </button>
+            <button onclick="ver('config')" class="w-full bg-slate-700 p-4 rounded-2xl font-black uppercase text-sm">Configuración de Costos</button>
         </div>
 
         <div id="sec-calc" class="seccion space-y-4">
-            <button onclick="ver('inicio')" class="text-blue-500 font-bold text-xs uppercase italic">← Volver</button>
-            <div class="bg-white p-6 rounded-3xl shadow-xl space-y-4">
+            <button onclick="ver('inicio')" class="text-red-500 font-bold text-xs uppercase underline">← Volver</button>
+            <div class="bg-white text-slate-900 p-6 rounded-2xl space-y-4 shadow-xl">
                 <input type="hidden" id="edit-id">
-                <input type="text" id="nombre" placeholder="NOMBRE DE LA PIEZA" class="w-full border-b-2 p-2 font-black uppercase outline-none focus:border-blue-500 text-lg">
-                <textarea id="descripcion" placeholder="Escribí algo vendedor..." class="w-full border-2 p-3 rounded-xl text-sm italic h-24 outline-none"></textarea>
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="number" id="gramos" placeholder="Gramos" class="bg-slate-100 p-3 rounded-xl text-center font-black outline-none" oninput="calcular()">
-                    <input type="number" id="minutos" placeholder="Minutos" class="bg-slate-100 p-3 rounded-xl text-center font-black outline-none" oninput="calcular()">
+                <input type="text" id="nombre" placeholder="Nombre de la pieza" class="w-full border-b-2 p-2 font-black uppercase outline-none text-lg">
+                <textarea id="descripcion" placeholder="Descripción vendedora..." class="w-full border-2 p-2 rounded-lg text-sm h-20 outline-none"></textarea>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="number" id="gramos" placeholder="Gramos" class="bg-slate-100 p-3 rounded-lg font-black" oninput="calcular()">
+                    <input type="number" id="minutos" placeholder="Minutos" class="bg-slate-100 p-3 rounded-lg font-black" oninput="calcular()">
                 </div>
-                <div class="bg-blue-50 border-2 border-dashed border-blue-200 p-4 rounded-2xl text-center cursor-pointer" onclick="document.getElementById('foto').click()">
+                <div class="bg-blue-50 border-2 border-dashed border-blue-200 p-4 rounded-xl text-center cursor-pointer" onclick="document.getElementById('foto').click()">
                     <input type="file" id="foto" accept="image/*" capture="environment" class="hidden">
-                    <span id="txtFoto" class="font-black text-blue-600 uppercase text-[10px]">📸 Tomar Foto Real</span>
+                    <span id="txtFoto" class="text-blue-600 font-black text-[10px] uppercase">📸 Sacar Foto</span>
                 </div>
-                <div class="bg-slate-900 p-6 rounded-3xl text-center"><p id="precioFinal" class="text-5xl font-black text-green-400 italic">$0</p></div>
-                <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase italic shadow-lg">Guardar en Catálogo</button>
-            </div>
-        </div>
-
-        <div id="sec-config" class="seccion bg-white p-6 rounded-3xl shadow-xl space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="font-black uppercase text-slate-700 text-sm italic">Costos del Taller</h2>
-                <button onclick="ver('inicio')" class="text-red-500 font-bold text-xs uppercase underline">Cerrar</button>
-            </div>
-            <div class="space-y-3">
-                <div class="bg-slate-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-slate-500 uppercase italic">Filamento x Kilo ($)</label><input type="number" id="cfg-filamento" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()"></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-slate-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-slate-500 uppercase italic">Luz/Min ($)</label><input type="number" step="0.1" id="cfg-luz" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()"></div>
-                    <div class="bg-slate-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-slate-500 uppercase italic">Maq/Min ($)</label><input type="number" step="0.1" id="cfg-desgaste" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()"></div>
+                <div class="bg-slate-900 p-4 rounded-xl text-center">
+                    <p id="precioFinal" class="text-4xl font-black text-green-400 italic">$0</p>
                 </div>
-                <div class="grid grid-cols-2 gap-3 border-t pt-3">
-                    <div class="bg-red-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-red-400 uppercase italic">Error (%)</label><input type="number" id="cfg-error" class="w-full bg-transparent font-bold outline-none text-red-600" onchange="guardarConfig()"></div>
-                    <div class="bg-green-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-green-400 uppercase italic">Ganancia (%)</label><input type="number" id="cfg-ganancia" class="w-full bg-transparent font-bold outline-none text-green-600" onchange="guardarConfig()"></div>
-                </div>
+                <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white p-4 rounded-xl font-black uppercase">Guardar en Catálogo</button>
             </div>
         </div>
 
         <div id="sec-cata" class="seccion activa space-y-4">
-            <div class="flex items-center justify-between py-2">
-                <p class="text-[10px] font-black uppercase text-slate-400 italic">Nuestras Creaciones</p>
-                <button onclick="compartirCatalogo()" class="admin-only bg-green-600 text-white text-[10px] font-bold py-2 px-4 rounded-full uppercase italic">📲 Compartir Catálogo</button>
-            </div>
-            <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 ¿Qué estás buscando?" class="w-full bg-white border-2 rounded-2xl px-4 py-4 text-sm font-bold outline-none shadow-sm focus:border-red-400 transition-all">
-            <div id="grid-productos" class="grid grid-cols-2 gap-3 pb-24"></div>
+            <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 Buscar pieza..." class="w-full p-4 rounded-xl text-slate-900 font-bold outline-none">
+            <div id="grid-productos" class="grid grid-cols-2 gap-3 pb-20"></div>
         </div>
+
     </main>
 
-    <div id="modalDetalle" class="modal" onclick="cerrarDetalle()">
-        <div class="bg-white w-full max-w-sm rounded-[40px] overflow-hidden shadow-2xl relative" onclick="event.stopPropagation()">
-            <img id="detImg" class="w-full h-72 object-cover border-b-4 border-red-600">
+    <div id="modalDetalle" class="modal" onclick="this.classList.remove('open')">
+        <div class="bg-white text-slate-900 w-full max-w-sm rounded-3xl overflow-hidden" onclick="event.stopPropagation()">
+            <img id="detImg" class="w-full h-64 object-cover border-b-4 border-red-600">
             <div class="p-6 space-y-4">
-                <div class="flex justify-between items-start">
-                    <h3 id="detNom" class="font-black text-xl uppercase text-slate-800 italic leading-tight"></h3>
-                    <p id="detPre" class="text-2xl font-black text-blue-600 italic"></p>
+                <div class="flex justify-between items-center">
+                    <h3 id="detNom" class="font-black text-xl uppercase italic"></h3>
+                    <p id="detPre" class="text-xl font-black text-blue-600 italic"></p>
                 </div>
-                <div class="bg-slate-50 p-4 rounded-2xl border-l-4 border-blue-400 italic text-slate-600 text-sm" id="detDes"></div>
-                
-                <button onclick="pedidoWhatsapp()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black uppercase text-sm italic shadow-lg flex items-center justify-center gap-2">
-                    <span>💬</span> ¡LO QUIERO! PEDIR POR WHATSAPP
-                </button>
-
+                <p id="detDes" class="text-sm text-slate-500 italic"></p>
+                <button onclick="pedidoWhatsapp()" class="w-full bg-green-600 text-white p-4 rounded-xl font-black uppercase text-sm">Lo quiero por WhatsApp</button>
                 <div class="admin-only flex gap-2 pt-2 border-t">
-                    <button id="btnCompPieza" class="flex-1 bg-blue-500 text-white py-3 rounded-xl font-bold uppercase text-[9px]">📲 Compartir</button>
-                    <button id="btnEditar" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-xl font-bold uppercase text-[9px]">✏️</button>
-                    <button id="btnBorrar" class="flex-1 bg-red-50 text-red-500 py-3 rounded-xl font-bold uppercase text-[9px]">🗑️</button>
+                    <button onclick="editarActual()" class="flex-1 bg-slate-100 p-2 rounded font-bold text-xs uppercase">Editar</button>
+                    <button onclick="borrarActual()" class="flex-1 bg-red-50 text-red-500 p-2 rounded font-bold text-xs uppercase">Borrar</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // CONFIGURACION SUPABASE
         const SB_URL = 'https://acsxhpotasjilafhqmoz.supabase.co'; 
         const SB_KEY = 'sb_publishable_sDXHl5jEwIRktVlJbIH2Lg_EYYMd_bF';
         let supabaseClient;
@@ -132,62 +114,65 @@
         let itemActual = null;
         let fotoFinal = "";
 
-        window.onload = async function() {
+        // ESTA FUNCION ES EL "MOTOR" DE LA APP
+        window.onload = async () => {
             supabaseClient = supabase.createClient(SB_URL, SB_KEY);
             
-            // Verificación de sesión
+            // Ver si ya sos admin
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
-                activarModoAdmin(session.user.email);
-                ver('inicio'); // Si es admin, lo mandamos al panel
-            } else {
-                ver('cata'); // Si no, al catálogo
+                document.body.classList.add('is-admin');
+                document.getElementById('user-display').innerText = session.user.email.split('@')[0];
+                document.getElementById('btn-login-header').style.display = 'none';
             }
 
             await cargarCata();
-
-            // Link directo a producto
+            
+            // Si viene un link de producto:
             const pId = new URLSearchParams(window.location.search).get('p');
             if(pId) {
                 const p = totalProductos.find(x => x.id == pId);
-                if(p) setTimeout(() => abrirDetalle(encodeURIComponent(JSON.stringify(p))), 500);
+                if(p) abrirDetalle(p);
             }
         };
 
         async function ejecutarLogin() {
             const n = document.getElementById('log-nombre').value.toLowerCase().trim();
             const p = document.getElementById('log-pass').value;
-            const btn = document.getElementById('btn-auth');
-            if(!n || !p) return alert("Faltan datos");
-            btn.innerText = "ACCEDIENDO...";
-            const { error } = await supabaseClient.auth.signInWithPassword({ email: n + "@craig.com", password: p });
-            if (error) { alert("Usuario o clave incorrecta"); btn.innerText = "Ingresar al Taller"; }
-            else { window.location.href = window.location.pathname; }
+            const btn = document.getElementById('btn-entrar-posta');
+
+            if(!n || !p) { alert("Completá todo"); return; }
+            
+            btn.innerText = "ENTRANDO...";
+            btn.disabled = true;
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ 
+                email: n + "@craig.com", 
+                password: p 
+            });
+
+            if (error) {
+                alert("Error: " + error.message);
+                btn.innerText = "Entrar al Taller";
+                btn.disabled = false;
+            } else {
+                window.location.href = window.location.pathname; // Recarga limpia
+            }
         }
 
-        function activarModoAdmin(email) {
-            document.body.classList.add('is-admin');
-            document.getElementById('user-display').innerText = email.split('@')[0];
-            const saved = localStorage.getItem('craig3d_config');
-            if(saved) config = JSON.parse(saved);
-            document.getElementById('cfg-filamento').value = config.filamento;
-            document.getElementById('cfg-luz').value = config.luz;
-            document.getElementById('cfg-desgaste').value = config.desgaste;
-            document.getElementById('cfg-error').value = config.error;
-            document.getElementById('cfg-ganancia').value = config.ganancia;
-        }
-
-        async function logout() { await supabaseClient.auth.signOut(); window.location.href = window.location.pathname; }
+        async function logout() { await supabaseClient.auth.signOut(); window.location.reload(); }
 
         function ver(id) {
             document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
             document.getElementById('sec-' + id).classList.add('activa');
-            window.scrollTo(0,0);
         }
 
-        function guardarConfig() {
-            config.filamento = parseFloat(document.getElementById('cfg-filamento').value);
-            config.luz = parseFloat(document.getElementById('cfg-luz').value);
-            config.desgaste = parseFloat(document.getElementById('cfg-desgaste').value);
-            config.error = parseFloat(document.getElementById('cfg-error').value);
-            config.ganancia = parseFloat(document.getElementById('cfg-ganancia').value);
+        async function cargarCata() {
+            const { data } = await supabaseClient.from('productos').select('*').order('id', {ascending: false});
+            totalProductos = data || [];
+            document.getElementById('grid-productos').innerHTML = totalProductos.map(p => `
+                <div onclick='abrirDetalle(${JSON.stringify(p)})' class="bg-slate-800 rounded-xl overflow-hidden border border-slate-700">
+                    <img src="${p.imagen}" class="aspect-square w-full object-cover">
+                    <div class="p-2">
+                        <div class="text-blue-400 font-black text-xs">$${p.precio}</div>
+                        <div class="text-[10px] font-
