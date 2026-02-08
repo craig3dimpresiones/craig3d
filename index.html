@@ -7,172 +7,237 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body, html { min-height: 100%; background: #0f172a; color: white; margin:0; padding:0; }
-        .seccion { display: none; } 
+        body { background-color: #0f172a; color: white; margin: 0; font-family: sans-serif; }
+        .seccion { display: none; }
         .activa { display: block !important; }
-        input { color: black; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-        .modal.open { display: flex; }
         .admin-only { display: none; }
         body.is-admin .admin-only { display: block !important; }
+        body.is-admin .client-only { display: none !important; }
+        input, textarea, select { color: black !important; }
     </style>
 </head>
 <body>
 
-    <header class="p-5 bg-slate-900 border-b-2 border-red-600 flex justify-between items-center sticky top-0 z-50">
-        <h1 onclick="window.location.reload()" class="font-black italic uppercase text-xl">Craig <span class="text-red-600">3D</span></h1>
-        <div id="status-area">
-            <button onclick="ver('login')" id="btn-login-header" class="text-[10px] font-bold border border-slate-700 px-3 py-1 rounded-full">ADMIN</button>
-            <button onclick="logout()" class="admin-only text-[10px] font-bold text-red-500 bg-red-500/10 px-3 py-1 rounded-full">SALIR</button>
+    <header class="p-4 bg-slate-900 border-b-2 border-red-600 flex justify-between items-center sticky top-0 z-50">
+        <h1 onclick="location.href=location.pathname" class="font-black italic uppercase text-lg cursor-pointer">
+            Craig <span class="text-red-600">3D</span>
+        </h1>
+        <div id="auth-buttons">
+            <button id="btn-admin-view" onclick="mostrarLogin()" class="client-only text-[10px] font-bold border border-slate-600 px-3 py-1 rounded-full text-slate-400">ADMIN</button>
+            <button onclick="cerrarSesion()" class="admin-only text-[10px] font-bold bg-red-600 px-3 py-1 rounded-full">SALIR</button>
         </div>
     </header>
 
     <main class="max-w-md mx-auto p-4">
 
         <div id="sec-login" class="seccion space-y-6 pt-10">
-            <div class="text-center space-y-2">
-                <h2 class="text-2xl font-black italic uppercase">Panel de Control</h2>
-                <p class="text-slate-400 text-xs">Ingresá tus credenciales</p>
-            </div>
-            <div class="space-y-3">
-                <input type="text" id="log-nombre" placeholder="USUARIO" class="w-full p-4 rounded-xl font-bold uppercase outline-none">
-                <input type="password" id="log-pass" placeholder="CONTRASEÑA" class="w-full p-4 rounded-xl font-bold outline-none">
-                <button onclick="ejecutarLogin()" id="btn-entrar-posta" class="w-full bg-red-600 text-white p-4 rounded-xl font-black uppercase shadow-lg hover:bg-red-700 transition-colors">
-                    Entrar al Taller
-                </button>
-                <button onclick="ver('cata')" class="w-full text-slate-500 text-xs font-bold uppercase py-2">Volver al Catálogo</button>
+            <h2 class="text-center text-xl font-black uppercase italic">Acceso Taller</h2>
+            <div class="space-y-4">
+                <input type="text" id="log-u" placeholder="USUARIO" class="w-full p-4 rounded-xl font-bold">
+                <input type="password" id="log-p" placeholder="CONTRASEÑA" class="w-full p-4 rounded-xl font-bold">
+                <button onclick="intentarLogin()" id="btn-entrar" class="w-full bg-red-600 p-4 rounded-xl font-black uppercase shadow-lg">Entrar Ahora</button>
+                <button onclick="verSeccion('cata')" class="w-full text-slate-500 text-xs font-bold uppercase">Volver al Catálogo</button>
             </div>
         </div>
 
-        <div id="sec-inicio" class="seccion admin-only space-y-4 pt-4">
+        <div id="sec-admin" class="seccion space-y-4 pt-4">
             <div class="bg-slate-800 p-4 rounded-2xl border-l-4 border-red-600">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Operador:</p>
-                <p id="user-display" class="font-black uppercase italic">---</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase italic">Estado: Conectado</p>
+                <p id="user-tag" class="font-black uppercase italic text-red-500">Administrador</p>
             </div>
-            <button onclick="ver('calc')" class="w-full bg-white text-slate-900 p-6 rounded-2xl font-black uppercase flex justify-between items-center">
-                <span>Nueva Cotización</span> <span>+</span>
+            <button onclick="verSeccion('calc')" class="w-full bg-white text-slate-900 p-6 rounded-2xl font-black uppercase flex justify-between items-center shadow-xl">
+                <span>Nueva Cotización</span> <span class="text-2xl text-red-600">+</span>
             </button>
-            <button onclick="ver('cata')" class="w-full bg-white text-slate-900 p-6 rounded-2xl font-black uppercase flex justify-between items-center">
-                <span>Ver Catálogo</span> <span>➔</span>
+            <button onclick="verSeccion('cata')" class="w-full bg-slate-700 text-white p-6 rounded-2xl font-black uppercase flex justify-between items-center border border-slate-600">
+                <span>Ir al Catálogo</span> <span class="text-2xl">➔</span>
             </button>
-            <button onclick="ver('config')" class="w-full bg-slate-700 p-4 rounded-2xl font-black uppercase text-sm">Configuración de Costos</button>
         </div>
 
         <div id="sec-calc" class="seccion space-y-4">
-            <button onclick="ver('inicio')" class="text-red-500 font-bold text-xs uppercase underline">← Volver</button>
-            <div class="bg-white text-slate-900 p-6 rounded-2xl space-y-4 shadow-xl">
-                <input type="hidden" id="edit-id">
-                <input type="text" id="nombre" placeholder="Nombre de la pieza" class="w-full border-b-2 p-2 font-black uppercase outline-none text-lg">
-                <textarea id="descripcion" placeholder="Descripción vendedora..." class="w-full border-2 p-2 rounded-lg text-sm h-20 outline-none"></textarea>
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="number" id="gramos" placeholder="Gramos" class="bg-slate-100 p-3 rounded-lg font-black" oninput="calcular()">
-                    <input type="number" id="minutos" placeholder="Minutos" class="bg-slate-100 p-3 rounded-lg font-black" oninput="calcular()">
+            <button onclick="verSeccion('admin')" class="text-red-500 font-bold text-xs uppercase underline">← Volver al Panel</button>
+            <div class="bg-white text-slate-900 p-6 rounded-3xl space-y-4 shadow-2xl">
+                <input type="text" id="nombre" placeholder="Nombre de la pieza" class="w-full border-b-2 p-2 font-black uppercase outline-none">
+                <textarea id="descripcion" placeholder="Descripción para el cliente..." class="w-full border-2 p-2 rounded-xl text-sm h-20 outline-none"></textarea>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" id="gramos" placeholder="Gramos" class="bg-slate-100 p-4 rounded-xl font-black text-center" oninput="recalcular()">
+                    <input type="number" id="minutos" placeholder="Minutos" class="bg-slate-100 p-4 rounded-xl font-black text-center" oninput="recalcular()">
                 </div>
-                <div class="bg-blue-50 border-2 border-dashed border-blue-200 p-4 rounded-xl text-center cursor-pointer" onclick="document.getElementById('foto').click()">
-                    <input type="file" id="foto" accept="image/*" capture="environment" class="hidden">
-                    <span id="txtFoto" class="text-blue-600 font-black text-[10px] uppercase">📸 Sacar Foto</span>
+                <div class="bg-blue-50 border-2 border-dashed border-blue-200 p-4 rounded-xl text-center" onclick="document.getElementById('f').click()">
+                    <input type="file" id="f" accept="image/*" capture="environment" class="hidden">
+                    <span id="f-txt" class="text-blue-600 font-black text-[10px] uppercase italic">📸 Tomar Foto Real</span>
                 </div>
-                <div class="bg-slate-900 p-4 rounded-xl text-center">
-                    <p id="precioFinal" class="text-4xl font-black text-green-400 italic">$0</p>
+                <div class="bg-slate-900 p-6 rounded-2xl text-center">
+                    <p id="res" class="text-5xl font-black text-green-400 italic">$0</p>
                 </div>
-                <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white p-4 rounded-xl font-black uppercase">Guardar en Catálogo</button>
+                <button onclick="guardar()" id="btn-save" class="w-full bg-red-600 text-white p-5 rounded-2xl font-black uppercase shadow-xl">Guardar en Catálogo</button>
             </div>
         </div>
 
         <div id="sec-cata" class="seccion activa space-y-4">
-            <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 Buscar pieza..." class="w-full p-4 rounded-xl text-slate-900 font-bold outline-none">
-            <div id="grid-productos" class="grid grid-cols-2 gap-3 pb-20"></div>
+            <div class="flex justify-between items-center">
+                <p class="text-[10px] font-bold text-slate-500 uppercase">Explorar catálogo</p>
+                <button onclick="compartirCata()" class="admin-only bg-green-600 text-[9px] px-3 py-1 rounded-full font-bold">COMPARTIR TODO</button>
+            </div>
+            <input type="text" id="bus" oninput="filtrar()" placeholder="🔍 ¿Qué buscas?" class="w-full p-4 rounded-2xl border-none outline-none font-bold">
+            <div id="grid" class="grid grid-cols-2 gap-3 pb-24"></div>
         </div>
 
     </main>
 
-    <div id="modalDetalle" class="modal" onclick="this.classList.remove('open')">
-        <div class="bg-white text-slate-900 w-full max-w-sm rounded-3xl overflow-hidden" onclick="event.stopPropagation()">
-            <img id="detImg" class="w-full h-64 object-cover border-b-4 border-red-600">
+    <div id="modal" class="hidden fixed inset-0 bg-black/90 z-[1000] flex items-center justify-center p-4" onclick="cerrarModal()">
+        <div class="bg-white text-slate-900 w-full max-w-sm rounded-[40px] overflow-hidden" onclick="event.stopPropagation()">
+            <img id="m-img" class="w-full h-64 object-cover border-b-4 border-red-600">
             <div class="p-6 space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 id="detNom" class="font-black text-xl uppercase italic"></h3>
-                    <p id="detPre" class="text-xl font-black text-blue-600 italic"></p>
+                <div class="flex justify-between items-start">
+                    <h3 id="m-nom" class="font-black text-xl uppercase italic leading-tight"></h3>
+                    <p id="m-pre" class="text-xl font-black text-blue-600 italic"></p>
                 </div>
-                <p id="detDes" class="text-sm text-slate-500 italic"></p>
-                <button onclick="pedidoWhatsapp()" class="w-full bg-green-600 text-white p-4 rounded-xl font-black uppercase text-sm">Lo quiero por WhatsApp</button>
-                <div class="admin-only flex gap-2 pt-2 border-t">
-                    <button onclick="editarActual()" class="flex-1 bg-slate-100 p-2 rounded font-bold text-xs uppercase">Editar</button>
-                    <button onclick="borrarActual()" class="flex-1 bg-red-50 text-red-500 p-2 rounded font-bold text-xs uppercase">Borrar</button>
+                <div class="bg-slate-50 p-4 rounded-2xl border-l-4 border-blue-400 text-sm italic text-slate-600" id="m-des"></div>
+                <button onclick="pedir()" class="w-full bg-green-600 text-white p-4 rounded-2xl font-black uppercase text-xs italic shadow-lg">Lo quiero por WhatsApp</button>
+                <div class="admin-only pt-2 border-t flex gap-2">
+                    <button onclick="borrarActual()" class="flex-1 bg-red-50 text-red-500 p-2 rounded-lg font-bold text-[10px] uppercase">Eliminar</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // CONFIGURACION SUPABASE
+        // -- CONFIGURACION --
         const SB_URL = 'https://acsxhpotasjilafhqmoz.supabase.co'; 
         const SB_KEY = 'sb_publishable_sDXHl5jEwIRktVlJbIH2Lg_EYYMd_bF';
-        let supabaseClient;
-        let config = { filamento: 21000, luz: 0.5, desgaste: 3.9, error: 10, ganancia: 80 };
-        let totalProductos = [];
-        let itemActual = null;
-        let fotoFinal = "";
+        const client = supabase.createClient(SB_URL, SB_KEY);
+        let items = [];
+        let actual = null;
+        let imgB64 = "";
 
-        // ESTA FUNCION ES EL "MOTOR" DE LA APP
+        // -- INICIO --
         window.onload = async () => {
-            supabaseClient = supabase.createClient(SB_URL, SB_KEY);
-            
-            // Ver si ya sos admin
-            const { data: { session } } = await supabaseClient.auth.getSession();
+            const { data: { session } } = await client.auth.getSession();
             if (session) {
                 document.body.classList.add('is-admin');
-                document.getElementById('user-display').innerText = session.user.email.split('@')[0];
-                document.getElementById('btn-login-header').style.display = 'none';
+                verSeccion('admin');
+            } else {
+                verSeccion('cata');
             }
-
-            await cargarCata();
+            await cargar();
             
-            // Si viene un link de producto:
+            // Link directo
             const pId = new URLSearchParams(window.location.search).get('p');
             if(pId) {
-                const p = totalProductos.find(x => x.id == pId);
-                if(p) abrirDetalle(p);
+                const p = items.find(x => x.id == pId);
+                if(p) verModal(p);
             }
         };
 
-        async function ejecutarLogin() {
-            const n = document.getElementById('log-nombre').value.toLowerCase().trim();
-            const p = document.getElementById('log-pass').value;
-            const btn = document.getElementById('btn-entrar-posta');
+        // -- NAVEGACION --
+        function verSeccion(id) {
+            document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
+            const destino = document.getElementById('sec-' + id);
+            if(destino) destino.classList.add('activa');
+            window.scrollTo(0,0);
+        }
 
-            if(!n || !p) { alert("Completá todo"); return; }
-            
-            btn.innerText = "ENTRANDO...";
-            btn.disabled = true;
+        function mostrarLogin() { verSeccion('login'); }
 
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ 
-                email: n + "@craig.com", 
-                password: p 
-            });
+        // -- LOGIN --
+        async function intentarLogin() {
+            const u = document.getElementById('log-u').value.trim().toLowerCase();
+            const p = document.getElementById('log-p').value;
+            const b = document.getElementById('btn-entrar');
+            if(!u || !p) return alert("Completá los campos");
+
+            b.innerText = "ENTRANDO...";
+            const { error } = await client.auth.signInWithPassword({ email: u + "@craig.com", password: p });
 
             if (error) {
-                alert("Error: " + error.message);
-                btn.innerText = "Entrar al Taller";
-                btn.disabled = false;
+                alert("Error: Usuario o Clave Incorrecta");
+                b.innerText = "Entrar Ahora";
             } else {
-                window.location.href = window.location.pathname; // Recarga limpia
+                location.reload();
             }
         }
 
-        async function logout() { await supabaseClient.auth.signOut(); window.location.reload(); }
+        async function cerrarSesion() { await client.auth.signOut(); location.reload(); }
 
-        function ver(id) {
-            document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
-            document.getElementById('sec-' + id).classList.add('activa');
+        // -- CATALOGO --
+        async function cargar() {
+            const { data } = await client.from('productos').select('*').order('id', {ascending: false});
+            items = data || [];
+            document.getElementById('grid').innerHTML = items.map(p => `
+                <div onclick='verModal(${JSON.stringify(p)})' class="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 shadow-lg">
+                    <img src="${p.imagen}" class="aspect-square w-full object-cover">
+                    <div class="p-3">
+                        <div class="text-blue-400 font-black text-xs italic">$${p.precio}</div>
+                        <div class="text-[10px] font-bold uppercase truncate italic">${p.nombre}</div>
+                    </div>
+                </div>`).join('');
         }
 
-        async function cargarCata() {
-            const { data } = await supabaseClient.from('productos').select('*').order('id', {ascending: false});
-            totalProductos = data || [];
-            document.getElementById('grid-productos').innerHTML = totalProductos.map(p => `
-                <div onclick='abrirDetalle(${JSON.stringify(p)})' class="bg-slate-800 rounded-xl overflow-hidden border border-slate-700">
-                    <img src="${p.imagen}" class="aspect-square w-full object-cover">
-                    <div class="p-2">
-                        <div class="text-blue-400 font-black text-xs">$${p.precio}</div>
-                        <div class="text-[10px] font-
+        function verModal(p) {
+            actual = p;
+            document.getElementById('m-img').src = p.imagen;
+            document.getElementById('m-nom').innerText = p.nombre;
+            document.getElementById('m-pre').innerText = '$' + p.precio;
+            document.getElementById('m-des').innerText = p.descripcion || 'Sin descripción.';
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function cerrarModal() { document.getElementById('modal').classList.add('hidden'); }
+
+        // -- CALCULADORA --
+        function recalcular() {
+            const g = parseFloat(document.getElementById('gramos').value) || 0;
+            const m = parseFloat(document.getElementById('minutos').value) || 0;
+            // Cálculo rápido: (Filamento + Tiempo) * Ganancia
+            const total = (((21000/1000)*g) + (4.5*m)) * 1.8;
+            document.getElementById('res').innerText = '$' + (Math.ceil(total / 100) * 100);
+        }
+
+        document.getElementById('f').onchange = (e) => {
+            const r = new FileReader(); r.onload = (ev) => {
+                const i = new Image(); i.onload = () => {
+                    const c = document.createElement('canvas'); const s = 600 / i.width;
+                    c.width = 600; c.height = i.height * s;
+                    c.getContext('2d').drawImage(i, 0, 0, c.width, c.height);
+                    imgB64 = c.toDataURL('image/jpeg', 0.6);
+                    document.getElementById('f-txt').innerText = "✅ FOTO LISTA";
+                }; i.src = ev.target.result;
+            }; r.readAsDataURL(e.target.files[0]);
+        };
+
+        async function guardar() {
+            const n = document.getElementById('nombre').value;
+            const p = parseInt(document.getElementById('res').innerText.replace('$',''));
+            if(!n || p <= 0) return alert("Faltan datos o foto");
+            
+            const btn = document.getElementById('btn-save');
+            btn.innerText = "GUARDANDO...";
+            btn.disabled = true;
+
+            const pay = { 
+                nombre: n, precio: p, 
+                descripcion: document.getElementById('descripcion').value,
+                gramos: document.getElementById('gramos').value,
+                minutos: document.getElementById('minutos').value,
+                imagen: imgB64 
+            };
+            
+            await client.from('productos').insert([pay]);
+            location.reload();
+        }
+
+        // -- WHATSAPP --
+        function pedir() {
+            const m = `¡Hola Craig 3D! 👋 Me interesa este producto de su catálogo:\n\n*${actual.nombre}*\n💰 Precio: $${actual.precio}\n\n¿Me dan más info?`;
+            window.open(`https://wa.me/5492804556677?text=${encodeURIComponent(m)}`, '_blank');
+        }
+
+        async function borrarActual() {
+            if(confirm("¿Seguro que querés eliminar esta pieza?")) {
+                await client.from('productos').delete().eq('id', actual.id);
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
