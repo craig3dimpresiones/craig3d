@@ -11,79 +11,202 @@
         .seccion { display: none; } 
         .activa { display: flex !important; flex-direction: column; }
         .admin-only { display: none; }
-        body.is-admin .admin-only { display: block; }
+        body.is-admin .admin-only { display: block !important; }
         input, textarea { color: black !important; }
-        .bg-dark-craig { background-color: #0f172a; }
-        .card-shadow { box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body class="font-sans">
 
-    <div id="sec-login" class="seccion fixed inset-0 z-[100] bg-dark-craig items-center justify-center p-6">
+    <div id="sec-login" class="seccion activa fixed inset-0 z-[100] bg-[#0f172a] items-center justify-center p-6">
         <div class="w-full max-w-sm space-y-12 text-center">
             <h1 class="font-black text-6xl italic uppercase tracking-tighter">CRAIG <span class="text-red-600">3D</span></h1>
-            <p class="text-slate-400 text-xs italic uppercase tracking-[0.2em]">Seleccionar Operador</p>
+            <p class="text-slate-400 text-xs italic uppercase tracking-[0.2em]">SELECCIONAR OPERADOR</p>
             
             <div class="grid gap-6">
-                <button onclick="loginRapido('usuario1', 'clave1')" class="group bg-white text-slate-900 p-8 rounded-2xl font-black uppercase italic flex items-center justify-between shadow-2xl active:scale-95 transition-all">
-                    <span class="text-xl">Usuario 1</span> 
-                    <span class="text-red-600 group-hover:translate-x-2 transition-transform">➔</span>
+                <button onclick="loginRapido('usuario1', 'clave1')" class="bg-white text-slate-900 p-8 rounded-2xl font-black uppercase italic flex items-center justify-between shadow-2xl active:scale-95 transition-all">
+                    <span class="text-xl">USUARIO 1</span> <span class="text-red-600 text-2xl">➔</span>
                 </button>
-                <button onclick="loginRapido('usuario2', 'clave2')" class="group bg-white text-slate-900 p-8 rounded-2xl font-black uppercase italic flex items-center justify-between shadow-2xl active:scale-95 transition-all">
-                    <span class="text-xl">Usuario 2</span> 
-                    <span class="text-red-600 group-hover:translate-x-2 transition-transform">➔</span>
+                <button onclick="loginRapido('usuario2', 'clave2')" class="bg-white text-slate-900 p-8 rounded-2xl font-black uppercase italic flex items-center justify-between shadow-2xl active:scale-95 transition-all">
+                    <span class="text-xl">USUARIO 2</span> <span class="text-red-600 text-2xl">➔</span>
                 </button>
             </div>
             
-            <button onclick="entrarInvitado()" class="text-slate-500 text-[10px] font-bold uppercase underline tracking-widest pt-4">Entrar como invitado</button>
+            <button onclick="ver('cata')" class="text-slate-500 text-[10px] font-bold uppercase underline tracking-widest pt-4">ENTRAR COMO INVITADO</button>
         </div>
     </div>
 
-    <header class="bg-slate-900 text-white p-5 flex justify-between items-center border-b-2 border-red-600 sticky top-0 z-50">
-        <h1 onclick="location.reload()" class="font-black text-xl italic uppercase tracking-tighter cursor-pointer">CRAIG <span class="text-red-600">3D</span></h1>
-        <button onclick="logout()" class="admin-only bg-red-600 text-[10px] font-black px-4 py-2 rounded-lg uppercase italic">Salir</button>
-    </header>
+    <div id="main-app" class="hidden">
+        <header class="bg-[#0f172a] text-white p-5 flex justify-between items-center border-b-2 border-red-600 sticky top-0 z-50">
+            <h1 onclick="location.reload()" class="font-black text-xl italic uppercase tracking-tighter cursor-pointer">CRAIG <span class="text-red-600">3D</span></h1>
+            <button onclick="logout()" class="admin-only bg-red-600 text-[10px] font-black px-4 py-2 rounded-lg uppercase italic">SALIR</button>
+        </header>
 
-    <main class="max-w-md mx-auto p-4 w-full min-h-screen">
-        
-        <div id="sec-inicio" class="seccion space-y-6 pt-6">
-            <div class="bg-slate-800/50 p-6 rounded-3xl border-l-8 border-red-600 backdrop-blur-sm">
-                <p class="text-[10px] font-bold text-slate-400 uppercase italic mb-1">Estado: Conectado</p>
-                <p class="font-black text-2xl uppercase italic text-white">Administrador</p>
-            </div>
+        <main class="max-w-md mx-auto p-4 w-full">
             
-            <button onclick="ver('calc')" class="w-full bg-white text-slate-900 p-8 rounded-[2rem] font-black uppercase italic flex justify-between items-center shadow-2xl active:scale-95 transition-all">
-                <span class="text-xl">Nueva Cotización</span> <span class="text-3xl text-red-600">+</span>
-            </button>
-            
-            <button onclick="ver('cata')" class="w-full bg-slate-800 text-white p-8 rounded-[2rem] font-black uppercase italic flex justify-between items-center border border-slate-700 shadow-2xl active:scale-95 transition-all">
-                <span class="text-xl">Ir al Catálogo</span> <span class="text-3xl">➔</span>
-            </button>
-        </div>
-
-        <div id="sec-cata" class="seccion space-y-6">
-            <div class="text-center pt-4">
-                <p class="text-[10px] font-black uppercase text-slate-500 italic tracking-[0.3em]">Nuestras Creaciones</p>
-            </div>
-            
-            <div class="relative">
-                <input type="text" id="buscador" oninput="filtrar()" placeholder="¿Qué estás buscando?" class="w-full bg-white text-slate-900 rounded-2xl px-6 py-5 font-bold shadow-xl outline-none border-4 border-transparent focus:border-red-600 transition-all">
-                <span class="absolute right-5 top-5 text-slate-300 text-xl">🔍</span>
-            </div>
-
-            <div id="grid-productos" class="grid grid-cols-2 gap-4 pb-24">
+            <div id="sec-inicio" class="seccion space-y-6 pt-6">
+                <div class="bg-slate-800/50 p-6 rounded-3xl border-l-8 border-red-600">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase italic">ESTADO: CONECTADO</p>
+                    <p class="font-black text-2xl uppercase italic">ADMINISTRADOR</p>
                 </div>
-        </div>
+                <button onclick="ver('calc')" class="w-full bg-white text-slate-900 p-8 rounded-[2rem] font-black uppercase italic flex justify-between items-center shadow-2xl">
+                    <span class="text-xl">NUEVA COTIZACIÓN</span> <span class="text-3xl text-red-600">+</span>
+                </button>
+                <button onclick="ver('cata')" class="w-full bg-slate-800 text-white p-8 rounded-[2rem] font-black uppercase italic flex justify-between items-center border border-slate-700 shadow-2xl">
+                    <span class="text-xl">IR AL CATÁLOGO</span> <span class="text-3xl">➔</span>
+                </button>
+            </div>
 
-        <div id="sec-calc" class="seccion space-y-6">
-            <button onclick="ver('inicio')" class="text-red-500 font-bold text-xs uppercase italic tracking-widest">← Volver al Panel</button>
-            <div class="bg-white text-slate-900 p-8 rounded-[2.5rem] shadow-2xl space-y-6">
-                <input type="text" id="nombre" placeholder="NOMBRE DE LA PIEZA" class="w-full border-b-4 border-slate-100 p-2 font-black uppercase outline-none focus:border-red-600 text-xl">
-                <textarea id="descripcion" placeholder="Descripción vendedora para el cliente..." class="w-full border-2 border-slate-100 p-4 rounded-2xl text-sm italic h-24 outline-none focus:border-blue-400"></textarea>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-slate-50 p-4 rounded-2xl">
-                        <label class="text-[10px] font-black text-slate-400 uppercase block mb-1">Gramos</label>
-                        <input type="number" id="gramos" class="w-full bg-transparent font-black text-2xl outline-none" oninput="calcular()">
+            <div id="sec-cata" class="seccion space-y-6">
+                <input type="text" id="buscador" oninput="filtrar()" placeholder="¿QUÉ ESTÁS BUSCANDO?" class="w-full bg-white text-slate-900 rounded-2xl px-6 py-5 font-bold shadow-xl outline-none">
+                <div id="grid-productos" class="grid grid-cols-2 gap-4 pb-24"></div>
+            </div>
+
+            <div id="sec-calc" class="seccion space-y-6">
+                <button onclick="ver('inicio')" class="text-red-500 font-bold text-xs uppercase italic tracking-widest">← VOLVER AL PANEL</button>
+                <div class="bg-white text-slate-900 p-8 rounded-[2.5rem] shadow-2xl space-y-6">
+                    <input type="text" id="nombre" placeholder="NOMBRE DE LA PIEZA" class="w-full border-b-4 border-slate-100 p-2 font-black uppercase outline-none text-xl">
+                    <textarea id="descripcion" placeholder="DESCRIPCIÓN VENDEDORA..." class="w-full border-2 border-slate-100 p-4 rounded-2xl text-sm italic h-24 outline-none"></textarea>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="number" id="gramos" placeholder="GRAMOS" class="bg-slate-100 p-4 rounded-2xl font-black text-2xl outline-none" oninput="calcular()">
+                        <input type="number" id="minutos" placeholder="MINUTOS" class="bg-slate-100 p-4 rounded-2xl font-black text-2xl outline-none" oninput="calcular()">
                     </div>
-                    <div class="bg-slate-50 p-4 rounded
+                    <div class="bg-red-50 border-4 border-dashed border-red-100 p-6 rounded-3xl text-center cursor-pointer" onclick="document.getElementById('foto').click()">
+                        <input type="file" id="foto" accept="image/*" capture="environment" class="hidden">
+                        <span id="txtFoto" class="font-black text-red-600 uppercase text-xs">📸 CAPTURAR FOTO</span>
+                    </div>
+                    <div class="bg-slate-900 p-8 rounded-[2rem] text-center border-b-8 border-green-500">
+                        <p id="precioFinal" class="text-6xl font-black text-green-400 italic">$0</p>
+                    </div>
+                    <button onclick="guardarPieza()" id="btnG" class="w-full bg-red-600 text-white py-6 rounded-2xl font-black uppercase italic shadow-lg">GUARDAR PIEZA</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modalDetalle" class="hidden fixed inset-0 bg-black/90 z-[200] flex items-center justify-center p-4" onclick="cerrarDetalle()">
+        <div class="bg-white text-slate-900 w-full max-w-sm rounded-[3rem] overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
+            <img id="detImg" class="w-full h-80 object-cover border-b-8 border-red-600">
+            <div class="p-8 space-y-6">
+                <div class="flex justify-between items-start">
+                    <h3 id="detNom" class="font-black text-2xl uppercase italic leading-tight"></h3>
+                    <p id="detPre" class="text-3xl font-black text-red-600 italic"></p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-2xl border-l-8 border-slate-900 italic text-slate-600 text-sm" id="detDes"></div>
+                <button onclick="pedidoWhatsapp()" class="w-full bg-green-600 text-white py-5 rounded-2xl font-black uppercase italic shadow-xl">PEDIR POR WHATSAPP</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SB_URL = 'https://acsxhpotasjilafhqmoz.supabase.co'; 
+        const SB_KEY = 'sb_publishable_sDXHl5jEwIRktVlJbIH2Lg_EYYMd_bF';
+        let supabaseClient;
+        let totalProductos = [];
+        let itemActual = null;
+        let fotoFinal = "";
+
+        window.onload = async () => {
+            supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            
+            if (session) {
+                document.body.classList.add('is-admin');
+                document.getElementById('main-app').classList.remove('hidden');
+                ver('inicio');
+            } else {
+                ver('login');
+            }
+            await cargarCata();
+        };
+
+        async function loginRapido(u, p) {
+            const { error } = await supabaseClient.auth.signInWithPassword({ 
+                email: u + "@craig.com", 
+                password: p 
+            });
+            if (error) alert("Error de acceso");
+            else location.reload();
+        }
+
+        function ver(id) {
+            document.getElementById('sec-login').classList.remove('activa');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
+            document.getElementById('sec-' + id).classList.add('activa');
+            window.scrollTo(0,0);
+        }
+
+        async function logout() { await supabaseClient.auth.signOut(); location.reload(); }
+
+        async function cargarCata() {
+            const { data } = await supabaseClient.from('productos').select('*').order('id', {ascending: false});
+            totalProductos = data || [];
+            renderCat(totalProductos);
+        }
+
+        function renderCat(lista) {
+            document.getElementById('grid-productos').innerHTML = lista.map(p => `
+                <div onclick='abrirDetalle(${JSON.stringify(p)})' class="bg-white rounded-3xl shadow-xl overflow-hidden active:scale-95 transition-all">
+                    <img src="${p.imagen}" class="aspect-square w-full object-cover">
+                    <div class="p-4 text-center">
+                        <div class="text-red-600 font-black text-lg italic">$${p.precio}</div>
+                        <div class="text-[10px] font-bold uppercase text-slate-800 italic truncate">${p.nombre}</div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function abrirDetalle(p) {
+            itemActual = p;
+            document.getElementById('detImg').src = p.imagen;
+            document.getElementById('detNom').innerText = p.nombre;
+            document.getElementById('detPre').innerText = '$' + p.precio;
+            document.getElementById('detDes').innerText = p.descripcion || 'Pieza exclusiva Craig 3D.';
+            document.getElementById('modalDetalle').classList.remove('hidden');
+        }
+
+        function cerrarDetalle() { document.getElementById('modalDetalle').classList.add('hidden'); }
+
+        function calcular() {
+            const g = parseFloat(document.getElementById('gramos').value) || 0;
+            const m = parseFloat(document.getElementById('minutos').value) || 0;
+            const total = (((21000/1000)*g) + (4.4*m)) * 1.8;
+            document.getElementById('precioFinal').innerText = '$' + (Math.ceil(total / 100) * 100);
+        }
+
+        document.getElementById('foto').onchange = (e) => {
+            const r = new FileReader(); r.onload = (ev) => {
+                const i = new Image(); i.onload = () => {
+                    const c = document.createElement('canvas'); const s = 600 / i.width;
+                    c.width = 600; c.height = i.height * s;
+                    c.getContext('2d').drawImage(i, 0, 0, c.width, c.height);
+                    fotoFinal = c.toDataURL('image/jpeg', 0.6);
+                    document.getElementById('txtFoto').innerText = "✅ FOTO LISTA";
+                }; i.src = ev.target.result;
+            }; r.readAsDataURL(e.target.files[0]);
+        };
+
+        async function guardarPieza() {
+            const pay = { 
+                nombre: document.getElementById('nombre').value, 
+                precio: parseInt(document.getElementById('precioFinal').innerText.replace('$','')),
+                descripcion: document.getElementById('descripcion').value,
+                gramos: document.getElementById('gramos').value,
+                minutos: document.getElementById('minutos').value,
+                imagen: fotoFinal
+            };
+            await supabaseClient.from('productos').insert([pay]);
+            location.reload();
+        }
+
+        function filtrar() {
+            const t = document.getElementById('buscador').value.toLowerCase();
+            renderCat(totalProductos.filter(p => p.nombre.toLowerCase().includes(t)));
+        }
+
+        function pedidoWhatsapp() {
+            const m = `¡Hola Craig 3D! 👋 Me interesa: *${itemActual.nombre}* ($${itemActual.precio})`;
+            window.open(`https://wa.me/5492804556677?text=${encodeURIComponent(m)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
