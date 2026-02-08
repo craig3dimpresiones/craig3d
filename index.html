@@ -1,99 +1,102 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Craig 3D - Catálogo</title>
+    <title>Craig 3D</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body, html { overflow-x: hidden; min-height: 100%; -webkit-tap-highlight-color: transparent; }
         .seccion { display: none; } 
         .activa { display: block; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 150; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 150; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
         .modal.open { display: flex; }
-        .admin-only { display: none; } /* Oculto por defecto */
+        .admin-only { display: none !important; }
+        body.is-admin .admin-only { display: block !important; }
+        body.is-admin .client-only { display: none !important; }
     </style>
 </head>
 <body class="bg-slate-100 font-sans text-slate-900">
 
-    <div id="sec-login" class="seccion fixed inset-0 min-h-screen flex items-center justify-center p-6 bg-slate-900 text-white z-[200]">
-        <div class="w-full max-w-sm space-y-6 text-center">
-            <h1 class="font-black text-4xl italic uppercase tracking-tighter text-white">Craig <span class="text-red-600">3D</span></h1>
-            <p class="text-slate-400 text-sm italic">Acceso Administrativo</p>
+    <header class="bg-slate-900 text-white p-6 flex justify-between items-center border-b-4 border-red-600 shadow-xl sticky top-0 z-50">
+        <h1 onclick="location.reload()" class="font-black text-xl italic uppercase tracking-tighter cursor-pointer">Craig <span class="text-red-600">3D</span></h1>
+        <div class="flex gap-3">
+            <button onclick="ver('config')" class="admin-only text-xl">⚙️</button>
+            <button id="btn-ir-login" onclick="ver('login')" class="client-only text-[10px] font-bold text-slate-400 uppercase border border-slate-700 px-3 py-1 rounded-full">Admin</button>
+            <button onclick="logout()" class="admin-only text-[10px] font-bold text-red-500 uppercase bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20">Salir</button>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto p-4 w-full">
+        
+        <div id="sec-login" class="seccion space-y-6 pt-10 text-center">
+            <h2 class="font-black text-2xl uppercase italic text-slate-800">Panel de Control</h2>
             <div class="space-y-3">
-                <input type="text" id="log-nombre" placeholder="Usuario" class="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-red-600 font-bold">
-                <input type="password" id="log-pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-red-600 font-bold">
-                <button onclick="login()" id="btn-login-click" class="w-full bg-red-600 p-4 rounded-2xl font-black uppercase shadow-lg text-white">Entrar al Taller</button>
-                <button onclick="ver('cata')" class="text-slate-500 text-xs uppercase font-bold mt-4">← Volver al Catálogo</button>
+                <input type="text" id="log-nombre" placeholder="Usuario" class="w-full p-4 rounded-2xl border-2 border-slate-200 outline-none focus:border-red-600 font-bold uppercase">
+                <input type="password" id="log-pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl border-2 border-slate-200 outline-none focus:border-red-600 font-bold">
+                <button onclick="ejecutarLogin()" id="btn-auth" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black uppercase shadow-lg active:scale-95 transition-all">Ingresar al Taller</button>
+                <button onclick="ver('cata')" class="text-slate-400 text-xs font-bold uppercase underline">Cancelar</button>
             </div>
         </div>
-    </div>
 
-    <div id="app-content" class="min-h-screen flex flex-col">
-        <header class="bg-slate-900 text-white p-6 flex justify-between items-center border-b-4 border-red-600 shadow-xl sticky top-0 z-50">
-            <h1 class="font-black text-xl italic uppercase tracking-tighter">Craig <span class="text-red-600">3D</span></h1>
-            <div class="flex gap-4 items-center">
-                <button onclick="ver('config')" class="admin-only text-xl">⚙️</button>
-                <button id="btn-admin-login" onclick="ver('login')" class="text-[10px] font-bold text-slate-400 uppercase border border-slate-700 px-3 py-1 rounded-full">Admin</button>
-                <button onclick="logout()" class="admin-only text-[10px] font-bold text-red-500 uppercase bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20">Salir</button>
+        <div id="sec-inicio" class="seccion admin-only space-y-4 pt-4">
+            <div class="bg-white p-4 rounded-2xl shadow-sm text-center border-l-4 border-red-600">
+                <p class="text-[10px] font-bold text-slate-400 uppercase italic">Operador:</p>
+                <p id="user-display" class="font-black text-slate-700 uppercase italic">---</p>
             </div>
-        </header>
+            <button onclick="ver('calc')" class="w-full bg-white p-6 rounded-3xl shadow-xl border-b-8 border-blue-500 font-black uppercase text-left flex justify-between items-center active:scale-95 transition-all">
+                <span>🧮 Nueva Cotización</span> <span class="text-blue-500 text-2xl">+</span>
+            </button>
+            <button onclick="ver('cata')" class="w-full bg-white p-6 rounded-3xl shadow-xl border-b-8 border-purple-500 font-black uppercase text-left flex justify-between items-center active:scale-95 transition-all">
+                <span>🖼️ Ir al Catálogo</span> <span class="text-purple-500 text-2xl">➔</span>
+            </button>
+        </div>
 
-        <main class="max-w-md mx-auto p-4 w-full flex-1">
-            <div id="sec-inicio" class="seccion space-y-4 pt-4 admin-only">
-                <div class="bg-white p-4 rounded-2xl shadow-sm text-center border-l-4 border-red-600">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase italic">Operador Actual</p>
-                    <p id="user-display" class="font-black text-slate-700 uppercase italic">---</p>
-                </div>
-                <button onclick="ver('calc')" class="w-full bg-white p-6 rounded-3xl shadow-xl border-b-8 border-blue-500 font-black uppercase text-left flex justify-between items-center active:scale-95 transition-all">
-                    <span>🧮 Nueva Cotización</span> <span class="text-blue-500 text-2xl">+</span>
-                </button>
-                <button onclick="ver('cata')" class="w-full bg-white p-6 rounded-3xl shadow-xl border-b-8 border-purple-500 font-black uppercase text-left flex justify-between items-center active:scale-95 transition-all">
-                    <span>🖼️ Ver Catálogo</span> <span class="text-purple-500 text-2xl">➔</span>
-                </button>
-            </div>
-
-            <div id="sec-calc" class="seccion bg-white p-6 rounded-3xl shadow-xl space-y-4">
-                <button onclick="limpiarForm(); ver('inicio')" class="text-blue-500 font-bold text-xs uppercase italic">← Volver</button>
+        <div id="sec-calc" class="seccion space-y-4">
+            <button onclick="ver('inicio')" class="text-blue-500 font-bold text-xs uppercase italic">← Volver</button>
+            <div class="bg-white p-6 rounded-3xl shadow-xl space-y-4">
                 <input type="hidden" id="edit-id">
-                <input type="text" id="nombre" placeholder="NOMBRE DE LA PIEZA" class="w-full border-b-2 p-2 font-black uppercase outline-none focus:border-blue-500">
-                <select id="material" class="w-full border-b-2 p-2 font-bold outline-none uppercase italic"><option value="PLA">PLA</option><option value="PETG">PETG</option><option value="ABS">ABS</option><option value="FLEX">FLEX</option></select>
-                <textarea id="descripcion" placeholder="Descripción para el cliente..." class="w-full border-2 p-3 rounded-xl text-sm italic h-24 outline-none"></textarea>
+                <input type="text" id="nombre" placeholder="NOMBRE DE LA PIEZA" class="w-full border-b-2 p-2 font-black uppercase outline-none focus:border-blue-500 text-lg">
+                <textarea id="descripcion" placeholder="Escribí algo vendedor para el cliente..." class="w-full border-2 p-3 rounded-xl text-sm italic h-24 outline-none"></textarea>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-slate-50 p-3 rounded-xl text-center"><label class="text-[10px] font-bold text-slate-400 block uppercase italic">Gramos</label><input type="number" id="gramos" class="bg-transparent text-center font-black w-full text-xl outline-none" oninput="calcular()"></div>
-                    <div class="bg-slate-50 p-3 rounded-xl text-center"><label class="text-[10px] font-bold text-slate-400 block uppercase italic">Minutos</label><input type="number" id="minutos" class="bg-transparent text-center font-black w-full text-xl outline-none" oninput="calcular()"></div>
+                    <input type="number" id="gramos" placeholder="Gramos" class="bg-slate-100 p-3 rounded-xl text-center font-black outline-none" oninput="calcular()">
+                    <input type="number" id="minutos" placeholder="Minutos" class="bg-slate-100 p-3 rounded-xl text-center font-black outline-none" oninput="calcular()">
                 </div>
-                <div class="bg-blue-50 border-2 border-dashed border-blue-200 p-4 rounded-2xl text-center cursor-pointer" onclick="document.getElementById('foto').click()"><input type="file" id="foto" accept="image/*" capture="environment" class="hidden"><span id="txtFoto" class="font-black text-blue-600 uppercase text-[10px]">📸 Tomar Foto Real</span></div>
-                <div class="bg-slate-900 p-6 rounded-3xl text-center border-b-4 border-green-500 shadow-xl"><p id="precioFinal" class="text-5xl font-black text-green-400 italic">$0</p></div>
+                <div class="bg-blue-50 border-2 border-dashed border-blue-200 p-4 rounded-2xl text-center cursor-pointer" onclick="document.getElementById('foto').click()">
+                    <input type="file" id="foto" accept="image/*" capture="environment" class="hidden">
+                    <span id="txtFoto" class="font-black text-blue-600 uppercase text-[10px]">📸 Tomar Foto Real</span>
+                </div>
+                <div class="bg-slate-900 p-6 rounded-3xl text-center"><p id="precioFinal" class="text-5xl font-black text-green-400 italic">$0</p></div>
                 <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase italic shadow-lg">Guardar en Catálogo</button>
             </div>
+        </div>
 
-            <div id="sec-config" class="seccion bg-white p-6 rounded-3xl shadow-xl space-y-4">
-                <div class="flex justify-between items-center border-b pb-2">
-                    <h2 class="font-black uppercase text-slate-700 text-sm italic">Costos del Taller</h2>
-                    <button onclick="ver('inicio')" class="text-red-500 font-bold text-xs uppercase underline">Cerrar</button>
-                </div>
-                <div id="inputs-config" class="space-y-3">
-                    <div class="bg-slate-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-slate-500 uppercase italic">Filamento x Kilo ($)</label><input type="number" id="cfg-filamento" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()"></div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-slate-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-slate-500 uppercase italic">Luz/Min ($)</label><input type="number" step="0.1" id="cfg-luz" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()"></div>
-                        <div class="bg-slate-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-slate-500 uppercase italic">Maq/Min ($)</label><input type="number" step="0.1" id="cfg-desgaste" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()"></div>
-                    </div>
-                </div>
+        <div id="sec-cata" class="seccion activa space-y-4">
+            <div class="flex items-center justify-between py-2">
+                <p class="text-[10px] font-black uppercase text-slate-400 italic">Nuestras Creaciones</p>
+                <button onclick="compartirCatalogo()" class="admin-only bg-green-600 text-white text-[10px] font-bold py-2 px-4 rounded-full uppercase italic">📲 Compartir Catálogo</button>
             </div>
-
-            <div id="sec-cata" class="seccion activa space-y-4">
-                <div class="flex items-center justify-between sticky top-[80px] bg-slate-100/90 py-2 z-40 backdrop-blur-sm">
-                    <p class="text-[10px] font-black uppercase text-slate-400 italic">Craig 3D • Catálogo</p>
-                    <button onclick="compartirCatalogo()" class="admin-only bg-green-600 text-white text-[10px] font-bold py-2 px-4 rounded-full uppercase italic shadow-lg flex items-center gap-2"><span>📲</span> Mi Catálogo</button>
-                </div>
-                <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 ¿Qué pieza buscas?" class="w-full bg-white border-2 rounded-2xl px-4 py-4 text-sm font-bold outline-none mb-2 shadow-sm focus:border-red-400 transition-all">
-                <div id="grid-productos" class="grid grid-cols-2 gap-3 pb-24"></div>
-            </div>
-        </main>
-    </div>
+            <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 ¿Qué estás buscando?" class="w-full bg-white border-2 rounded-2xl px-4 py-4 text-sm font-bold outline-none shadow-sm">
+            <div id="grid-productos" class="grid grid-cols-2 gap-3 pb-24"></div>
+        </div>
+    </main>
 
     <div id="modalDetalle" class="modal" onclick="cerrarDetalle()">
         <div class="bg-white w-full max-w-sm rounded-[40px] overflow-hidden shadow-2xl relative" onclick="event.stopPropagation()">
-            <img id="detImg" class="w-full
+            <img id="detImg" class="w-full h-72 object-cover border-b-4 border-red-600">
+            <div class="p-6 space-y-4">
+                <div class="flex justify-between items-start">
+                    <h3 id="detNom" class="font-black text-xl uppercase text-slate-800 italic leading-tight"></h3>
+                    <p id="detPre" class="text-2xl font-black text-blue-600 italic"></p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border-l-4 border-blue-400 italic text-slate-600 text-sm" id="detDes"></div>
+                
+                <button onclick="pedidoWhatsapp()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black uppercase text-sm italic shadow-lg flex items-center justify-center gap-2">
+                    <span>💬</span> ¡LO QUIERO! PEDIR POR WHATSAPP
+                </button>
+
+                <div class="admin-only flex gap-2 pt-2 border-t">
+                    <button id="btnCompPieza" class="flex-1 bg-blue-500 text-white py-3 rounded-xl font-bold uppercase text-[9px]">📲 Compartir</button>
+                    <button id="btnEditar" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-xl font-bold uppercase text-[9px]">✏️</button>
+                    <button id="btnBorrar" class="flex-1 bg-red-50 text-red-500 py-3 rounded-xl font-bold uppercase text-[9px]">🗑️</
