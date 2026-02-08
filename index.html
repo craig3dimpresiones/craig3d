@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Craig 3D - Gestión</title>
+    <title>Craig 3D</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -20,11 +20,12 @@
     <div id="sec-login" class="fixed inset-0 min-h-screen flex items-center justify-center p-6 bg-slate-900 text-white z-[200]">
         <div class="w-full max-w-sm space-y-6 text-center">
             <h1 class="font-black text-4xl italic uppercase tracking-tighter text-white">Craig <span class="text-red-600">3D</span></h1>
-            <p class="text-slate-400 text-sm italic">Acceso de Personal</p>
-            <div class="space-y-3">
+            <p id="login-status" class="text-slate-400 text-sm italic">Iniciando sistema...</p>
+            
+            <div id="login-form" class="space-y-3 opacity-50 pointer-events-none">
                 <input type="text" id="log-nombre" placeholder="Usuario" class="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-red-600 font-bold">
                 <input type="password" id="log-pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-red-600 font-bold">
-                <button id="btn-login-click" class="w-full bg-red-600 p-4 rounded-2xl font-black uppercase shadow-lg text-white">Entrar</button>
+                <button onclick="login()" id="btn-login-click" class="w-full bg-red-600 p-4 rounded-2xl font-black uppercase shadow-lg active:scale-95 transition-all text-white">Entrar</button>
             </div>
         </div>
     </div>
@@ -82,7 +83,7 @@
                 </div>
                 <div class="bg-blue-50 border-2 border-dashed border-blue-200 p-4 rounded-2xl text-center cursor-pointer" onclick="document.getElementById('foto').click()"><input type="file" id="foto" accept="image/*" capture="environment" class="hidden"><span id="txtFoto" class="font-black text-blue-600 uppercase text-[10px]">📸 Tomar Foto</span></div>
                 <div class="bg-slate-900 p-6 rounded-3xl text-center border-b-4 border-green-500 shadow-xl"><p id="precioFinal" class="text-5xl font-black text-green-400 italic">$0</p><p class="text-[8px] text-green-700 font-bold uppercase mt-1">Precio Redondeado x100</p></div>
-                <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase italic shadow-lg active:scale-95 transition-all">Guardar Pieza</button>
+                <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase italic shadow-lg">Guardar Pieza</button>
             </div>
 
             <div id="sec-cata" class="seccion space-y-4">
@@ -103,22 +104,19 @@
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
                         <h3 id="detNom" class="font-black text-2xl uppercase text-slate-800 leading-none italic"></h3>
-                        <p id="detCreador" class="text-[9px] font-bold text-slate-400 uppercase mt-2 italic"></p>
                     </div>
                     <p id="detPre" class="text-2xl font-black text-blue-600 italic"></p>
                 </div>
                 <p id="detDes" class="text-sm text-slate-500 italic"></p>
                 <div class="grid grid-cols-3 gap-2 pt-4 border-t text-center text-slate-700">
-                    <div class="bg-slate-50 p-2 rounded-xl text-[10px] font-black"><p class="text-[8px] text-slate-400 uppercase italic">Mat.</p><span id="detMat"></span></div>
-                    <div class="bg-slate-50 p-2 rounded-xl text-[10px] font-black"><p class="text-[8px] text-slate-400 uppercase italic">Peso</p><span id="detGra"></span></div>
-                    <div class="bg-slate-50 p-2 rounded-xl text-[10px] font-black"><p class="text-[8px] text-slate-400 uppercase italic">Tiempo</p><span id="detTie"></span></div>
+                    <div class="bg-slate-50 p-2 rounded-xl text-[10px] font-black"><span id="detMat"></span></div>
+                    <div class="bg-slate-50 p-2 rounded-xl text-[10px] font-black"><span id="detGra"></span></div>
+                    <div class="bg-slate-50 p-2 rounded-xl text-[10px] font-black"><span id="detTie"></span></div>
                 </div>
-                <div class="space-y-2 pt-2">
-                    <button id="btnCompPieza" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black uppercase text-xs italic">📲 Enviar a Cliente</button>
-                    <div class="flex gap-2">
-                        <button id="btnEditar" class="flex-1 bg-slate-100 text-slate-700 py-4 rounded-2xl font-bold uppercase text-[10px] italic">✏️ Editar</button>
-                        <button id="btnBorrar" class="flex-1 bg-red-50 text-red-500 py-4 rounded-2xl font-bold uppercase text-[10px] italic">🗑️ Borrar</button>
-                    </div>
+                <button id="btnCompPieza" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black uppercase text-xs italic">📲 Enviar a Cliente</button>
+                <div class="flex gap-2">
+                    <button id="btnEditar" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-2xl font-bold uppercase text-[10px]">✏️ Editar</button>
+                    <button id="btnBorrar" class="flex-1 bg-red-50 text-red-500 py-3 rounded-2xl font-bold uppercase text-[10px]">🗑️ Borrar</button>
                 </div>
             </div>
         </div>
@@ -133,10 +131,22 @@
         let totalProductos = [];
         let usuarioActual = "";
 
-        window.onload = () => {
-            supabaseClient = supabase.createClient(SB_URL, SB_KEY);
-            checkUser();
-            document.getElementById('btn-login-click').addEventListener('click', login);
+        // Función de inicio ultra-segura
+        window.onload = function() {
+            try {
+                if (typeof supabase === 'undefined') {
+                    document.getElementById('login-status').innerText = "Error: No se cargó la librería. Reintentando...";
+                    setTimeout(() => location.reload(), 2000);
+                    return;
+                }
+                supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+                document.getElementById('login-status').innerText = "Acceso de Personal";
+                document.getElementById('login-form').style.opacity = "1";
+                document.getElementById('login-form').style.pointerEvents = "auto";
+                checkUser();
+            } catch (e) {
+                alert("Error crítico: " + e.message);
+            }
         };
 
         async function checkUser() {
@@ -154,12 +164,24 @@
             const nombre = document.getElementById('log-nombre').value.toLowerCase().trim();
             const pass = document.getElementById('log-pass').value;
             const btn = document.getElementById('btn-login-click');
+            
             if(!nombre || !pass) return alert("Completá los datos");
-            btn.innerText = "ACCEDIENDO...";
-            const emailFake = nombre + "@craig.com";
-            const { error } = await supabaseClient.auth.signInWithPassword({ email: emailFake, password: pass });
-            if (error) { alert("Error: " + error.message); btn.innerText = "Entrar"; }
-            else { checkUser(); }
+            
+            btn.innerText = "VERIFICANDO...";
+            btn.disabled = true;
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ 
+                email: nombre + "@craig.com", 
+                password: pass 
+            });
+
+            if (error) { 
+                alert("Usuario o clave incorrectos"); 
+                btn.innerText = "Entrar"; 
+                btn.disabled = false;
+            } else { 
+                checkUser(); 
+            }
         }
 
         async function logout() { await supabaseClient.auth.signOut(); location.reload(); }
@@ -257,28 +279,23 @@
                      class="bg-white rounded-2xl shadow-sm overflow-hidden active:scale-95 flex flex-col border border-slate-100">
                     <div class="aspect-square w-full bg-slate-100 relative">
                         <img src="${p.imagen}" class="w-full h-full object-cover">
-                        <div class="absolute top-2 right-2 bg-black/40 backdrop-blur-md text-white text-[7px] px-2 py-0.5 rounded-full font-bold uppercase italic italic">
+                        <div class="absolute top-2 right-2 bg-black/40 backdrop-blur-md text-white text-[7px] px-2 py-0.5 rounded-full font-bold uppercase italic">
                             ${p.material || 'PLA'}
                         </div>
                     </div>
-                    <div class="p-3 flex-1 flex flex-col justify-between">
-                        <div>
-                            <div class="text-blue-600 font-black text-xs mb-1 italic">$${p.precio}</div>
-                            <div class="text-[11px] font-bold uppercase text-slate-700 leading-tight line-clamp-2 italic">${p.nombre}</div>
-                        </div>
+                    <div class="p-3 flex-1">
+                        <div class="text-blue-600 font-black text-xs mb-1 italic">$${p.precio}</div>
+                        <div class="text-[11px] font-bold uppercase text-slate-700 leading-tight line-clamp-2 italic">${p.nombre}</div>
                     </div>
                 </div>`).join('');
         }
 
         function compartirCatalogo() {
-            const link = window.location.href;
-            const msj = encodeURIComponent(`¡Hola! Te comparto nuestro catálogo de impresiones 3D en Craig 3D 🎨🚀\n\nPodés verlo acá:\n${link}`);
-            window.open(`https://wa.me/?text=${msj}`, '_blank');
+            window.open(`https://wa.me/?text=${encodeURIComponent('¡Hola! Te comparto nuestro catálogo de Craig 3D 🎨🚀\n\nPodés verlo acá:\n' + window.location.href)}`, '_blank');
         }
 
         function compartirPieza(p) {
-            const msj = encodeURIComponent(`*${p.nombre}* 🚀\n\n💰 Precio: $${p.precio}\n🧵 Material: ${p.material}\n📝 Detalle: ${p.descripcion || 'Sin descripción'}\n\n¡Consultanos por la tuya! 🎨`);
-            window.open(`https://wa.me/?text=${msj}`, '_blank');
+            window.open(`https://wa.me/?text=${encodeURIComponent('*' + p.nombre + '* 🚀\n\n💰 Precio: $' + p.precio + '\n🧵 Material: ' + p.material + '\n\n¡Consultanos por la tuya! 🎨')}`, '_blank');
         }
 
         function abrirDetalle(json) {
@@ -298,4 +315,29 @@
 
         function filtrar() {
             const t = document.getElementById('buscador').value.toLowerCase();
-            renderCat(
+            renderCat(totalProductos.filter(p => p.nombre.toLowerCase().includes(t)));
+        }
+
+        async function borrar(id) {
+            if(confirm("¿Borrar?")) { 
+                await supabaseClient.from('productos').delete().eq('id', id); 
+                cerrarDetalle(); cargarCata(); 
+            }
+        }
+
+        function editar(p) {
+            cerrarDetalle(); ver('calc');
+            document.getElementById('edit-id').value = p.id;
+            document.getElementById('nombre').value = p.nombre;
+            document.getElementById('descripcion').value = p.descripcion;
+            document.getElementById('material').value = p.material;
+            document.getElementById('gramos').value = p.gramos;
+            document.getElementById('minutos').value = p.minutos;
+            calcular();
+            document.getElementById('btnG').innerText = "ACTUALIZAR PIEZA";
+        }
+
+        function cerrarDetalle() { document.getElementById('modalDetalle').classList.remove('open'); }
+    </script>
+</body>
+</html>
