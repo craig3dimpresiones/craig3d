@@ -14,7 +14,6 @@
         .modal.open { display: flex; }
         .admin-only { display: none !important; }
         body.is-admin .admin-only { display: block !important; }
-        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         input, textarea, select { color: black !important; }
     </style>
 </head>
@@ -25,11 +24,11 @@
             <h1 class="font-black text-5xl italic uppercase tracking-tighter">CRAIG <span class="text-red-600">3D</span></h1>
             <div class="space-y-4 text-left">
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Usuario</label>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 italic">Usuario</label>
                     <input type="text" id="log-u" placeholder="Nombre" class="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-red-600 font-bold">
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Contraseña</label>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 italic">Contraseña</label>
                     <input type="password" id="log-p" placeholder="••••••••" class="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-red-600 font-bold">
                 </div>
                 <button onclick="ejecutarLogin()" id="btn-login-click" class="w-full bg-red-600 text-white p-5 rounded-2xl font-black uppercase italic shadow-2xl active:scale-95 transition-all">
@@ -44,64 +43,51 @@
         <header class="bg-slate-900 text-white p-5 flex justify-between items-center border-b-2 border-red-600 sticky top-0 z-50">
             <h1 onclick="ver('cata')" class="font-black text-xl italic uppercase tracking-tighter cursor-pointer">CRAIG <span class="text-red-600">3D</span></h1>
             <div class="flex gap-4 items-center">
-                <button onclick="ver('config')" class="admin-only text-xl">⚙️</button>
+                <button onclick="ver('inicio')" class="admin-only text-xl">🏠</button>
                 <button onclick="logout()" class="admin-only text-[10px] font-black text-red-500 uppercase bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20">Salir</button>
                 <button id="btn-acceso-admin" onclick="ver('login')" class="text-[10px] font-black uppercase bg-slate-800 px-3 py-1 rounded-full border border-slate-700">Admin</button>
             </div>
         </header>
 
         <main class="max-w-md mx-auto p-4 w-full flex-1">
-            
             <div id="sec-inicio" class="seccion space-y-4 pt-4">
                 <div class="bg-white p-5 rounded-3xl shadow-sm border-l-8 border-red-600">
                     <p class="text-[10px] font-black text-slate-400 uppercase italic">Operador Conectado</p>
                     <p id="user-display" class="font-black text-xl text-slate-700 uppercase italic">---</p>
                 </div>
-                <button onclick="ver('calc')" class="w-full bg-white p-7 rounded-[2.5rem] shadow-xl border-b-8 border-blue-600 font-black uppercase italic text-left flex justify-between items-center active:scale-95 transition-all">
-                    <span class="text-lg">🧮 Nueva Cotización</span> <span class="text-blue-600 text-3xl">+</span>
+                <button onclick="ver('calc')" class="w-full bg-white p-7 rounded-[2.5rem] shadow-xl border-b-8 border-blue-600 font-black uppercase italic text-left flex justify-between items-center">
+                    <span>🧮 Nueva Cotización</span> <span class="text-blue-600 text-3xl">+</span>
                 </button>
-                <button onclick="ver('cata')" class="w-full bg-white p-7 rounded-[2.5rem] shadow-xl border-b-8 border-purple-600 font-black uppercase italic text-left flex justify-between items-center active:scale-95 transition-all">
-                    <span class="text-lg">🖼️ Ver Catálogo</span> <span class="text-purple-600 text-3xl">➔</span>
+                <button onclick="ver('cata')" class="w-full bg-white p-7 rounded-[2.5rem] shadow-xl border-b-8 border-purple-600 font-black uppercase italic text-left flex justify-between items-center">
+                    <span>🖼️ Ver Catálogo</span> <span class="text-purple-600 text-3xl">➔</span>
                 </button>
             </div>
 
             <div id="sec-cata" class="seccion activa space-y-4">
-                <div class="flex items-center justify-between py-2">
-                    <p class="text-[10px] font-black uppercase text-slate-400 italic">Explorar Piezas</p>
-                    <button onclick="compartirCatalogo()" class="admin-only bg-green-600 text-white text-[10px] font-bold py-2 px-4 rounded-full uppercase italic shadow-lg">📲 Compartir Todo</button>
-                </div>
-                <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 ¿Qué estás buscando?" class="w-full bg-white border-none rounded-2xl px-6 py-5 font-bold shadow-xl outline-none focus:ring-2 focus:ring-red-600 transition-all">
+                <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 ¿Qué estás buscando?" class="w-full bg-white border-none rounded-2xl px-6 py-5 font-bold shadow-xl outline-none focus:ring-2 focus:ring-red-600">
                 <div id="grid-productos" class="grid grid-cols-2 gap-4 pb-24"></div>
             </div>
 
             <div id="sec-calc" class="seccion bg-white p-6 rounded-[2.5rem] shadow-2xl space-y-4">
                 <button onclick="ver('inicio')" class="text-red-500 font-bold text-[10px] uppercase italic tracking-widest">← Volver</button>
-                <input type="text" id="nombre" placeholder="NOMBRE DE LA PIEZA" class="w-full border-b-4 p-2 font-black uppercase outline-none focus:border-red-600 text-xl">
+                <input type="text" id="nombre-pieza" placeholder="NOMBRE PIEZA" class="w-full border-b-4 p-2 font-black uppercase outline-none focus:border-red-600 text-xl">
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-slate-50 p-4 rounded-2xl text-center"><label class="text-[10px] font-bold text-slate-400 block uppercase italic">Gramos</label><input type="number" id="gramos" class="bg-transparent text-center font-black w-full text-2xl outline-none" oninput="calcular()"></div>
-                    <div class="bg-slate-50 p-4 rounded-2xl text-center"><label class="text-[10px] font-bold text-slate-400 block uppercase italic">Minutos</label><input type="number" id="minutos" class="bg-transparent text-center font-black w-full text-2xl outline-none" oninput="calcular()"></div>
+                    <input type="number" id="gr" placeholder="Gramos" class="bg-slate-50 p-4 rounded-2xl font-black text-xl">
+                    <input type="number" id="min" placeholder="Minutos" class="bg-slate-50 p-4 rounded-2xl font-black text-xl">
                 </div>
-                <div class="bg-slate-900 p-8 rounded-[2rem] text-center border-b-8 border-green-500 shadow-xl"><p id="precioFinal" class="text-6xl font-black text-green-400 italic">$0</p></div>
-                <button onclick="alert('Funcionalidad de guardado lista')" class="w-full bg-red-600 text-white py-6 rounded-2xl font-black uppercase italic shadow-lg active:scale-95 transition-all">Guardar en Catálogo</button>
+                <button onclick="alert('Cotización calculada')" class="w-full bg-red-600 text-white py-6 rounded-2xl font-black uppercase italic">Calcular y Guardar</button>
             </div>
         </main>
     </div>
 
     <div id="modalDetalle" class="modal" onclick="cerrarDetalle()">
-        <div class="bg-white w-full max-w-sm rounded-[3rem] overflow-hidden shadow-2xl relative" onclick="event.stopPropagation()">
+        <div class="bg-white w-full max-w-sm rounded-[3rem] overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
             <img id="detImg" class="w-full h-80 object-cover border-b-8 border-red-600">
             <div class="p-8 space-y-5">
-                <div class="flex justify-between items-start">
-                    <h3 id="detNom" class="font-black text-2xl uppercase italic text-slate-800 leading-tight"></h3>
-                    <p id="detPre" class="text-3xl font-black text-red-600 italic"></p>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-2xl border-l-8 border-slate-900"><p id="detDes" class="text-sm text-slate-600 italic leading-relaxed">Pieza exclusiva de Craig 3D.</p></div>
-                <button id="btnPedido" class="w-full bg-green-600 text-white py-5 rounded-2xl font-black uppercase text-xs italic shadow-xl flex items-center justify-center gap-2">
-                    <span>💬</span> Pedir por WhatsApp
-                </button>
-                <div class="admin-only flex gap-2 pt-4">
-                    <button id="btnBorrar" class="flex-1 bg-red-50 text-red-500 py-3 rounded-xl font-bold uppercase text-[10px]">🗑️ Eliminar</button>
-                </div>
+                <h3 id="detNom" class="font-black text-2xl uppercase italic text-slate-800"></h3>
+                <p id="detPre" class="text-3xl font-black text-red-600 italic"></p>
+                <button id="btnPedido" class="w-full bg-green-600 text-white py-5 rounded-2xl font-black uppercase italic">Pedir por WhatsApp</button>
+                <button id="btnBorrar" class="admin-only w-full bg-red-50 text-red-500 py-3 rounded-xl font-bold uppercase text-[10px]">🗑️ Eliminar</button>
             </div>
         </div>
     </div>
@@ -115,10 +101,7 @@
         window.onload = async () => {
             const { data: { session } } = await client.auth.getSession();
             if (session) {
-                document.body.classList.add('is-admin');
-                document.getElementById('user-display').innerText = session.user.email.split('@')[0];
-                document.getElementById('btn-acceso-admin').style.display = 'none';
-                ver('inicio');
+                aplicarAdmin(session.user.email);
             } else {
                 ver('cata');
             }
@@ -130,26 +113,43 @@
             const p = document.getElementById('log-p').value;
             const btn = document.getElementById('btn-login-click');
 
-            if(!u || !p) return alert("Por favor, completa los campos.");
-            
-            btn.innerText = "VERIFICANDO...";
-            const { error } = await client.auth.signInWithPassword({ email: u + "@craig.com", password: p });
-            
+            if(!u || !p) return alert("Completa los datos");
+            btn.innerText = "ENTRANDO...";
+            btn.disabled = true;
+
+            const { data, error } = await client.auth.signInWithPassword({ 
+                email: u + "@craig.com", 
+                password: p 
+            });
+
             if (error) {
-                alert("Usuario o clave incorrectos.");
+                alert("Error: " + error.message);
                 btn.innerText = "Entrar al Taller";
+                btn.disabled = false;
             } else {
-                location.reload();
+                // Éxito: Aplicamos cambios visuales antes de cualquier recarga
+                aplicarAdmin(data.user.email);
+                ver('inicio');
+                location.reload(); // Recarga para limpiar estados de memoria
             }
         }
 
-        async function logout() { await client.auth.signOut(); location.reload(); }
+        function aplicarAdmin(email) {
+            document.body.classList.add('is-admin');
+            document.getElementById('user-display').innerText = email.split('@')[0];
+            document.getElementById('btn-acceso-admin').style.display = 'none';
+            ver('inicio');
+        }
+
+        async function logout() { 
+            await client.auth.signOut(); 
+            location.reload(); 
+        }
 
         function ver(id) {
             document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
             const target = document.getElementById('sec-' + id);
             if(target) target.classList.add('activa');
-            window.scrollTo(0,0);
         }
 
         async function cargarCata() {
@@ -170,8 +170,7 @@
             document.getElementById('detNom').innerText = p.nombre;
             document.getElementById('detPre').innerText = '$' + p.precio;
             document.getElementById('btnPedido').onclick = () => {
-                const msg = `¡Hola Craig 3D! Me interesa la pieza: *${p.nombre}* ($${p.precio})`;
-                window.open(`https://wa.me/5492804556677?text=${encodeURIComponent(msg)}`);
+                window.open(`https://wa.me/5492804556677?text=Me interesa: ${p.nombre}`);
             };
             document.getElementById('btnBorrar').onclick = () => borrar(p.id);
             document.getElementById('modalDetalle').classList.add('open');
@@ -179,15 +178,8 @@
 
         function cerrarDetalle() { document.getElementById('modalDetalle').classList.remove('open'); }
 
-        function filtrar() {
-            const t = document.getElementById('buscador').value.toLowerCase();
-            const filtrados = totalProductos.filter(p => p.nombre.toLowerCase().includes(t));
-            // (Re-render simplificado para el ejemplo)
-            cargarCata(); 
-        }
-
         function borrar(id) {
-            if(confirm("¿Seguro quieres borrar esta pieza?")) {
+            if(confirm("¿Borrar?")) {
                 client.from('productos').delete().eq('id', id).then(() => location.reload());
             }
         }
