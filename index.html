@@ -20,12 +20,11 @@
     <div id="sec-login" class="fixed inset-0 min-h-screen flex items-center justify-center p-6 bg-slate-900 text-white z-[200]">
         <div class="w-full max-w-sm space-y-6 text-center">
             <h1 class="font-black text-4xl italic uppercase tracking-tighter text-white">Craig <span class="text-red-600">3D</span></h1>
-            <p id="login-status" class="text-slate-400 text-sm italic">Iniciando sistema...</p>
-            
+            <p id="login-status" class="text-slate-400 text-sm italic">Cargando taller...</p>
             <div id="login-form" class="space-y-3 opacity-50 pointer-events-none">
                 <input type="text" id="log-nombre" placeholder="Usuario" class="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-red-600 font-bold">
                 <input type="password" id="log-pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-red-600 font-bold">
-                <button onclick="login()" id="btn-login-click" class="w-full bg-red-600 p-4 rounded-2xl font-black uppercase shadow-lg active:scale-95 transition-all text-white">Entrar</button>
+                <button onclick="login()" id="btn-login-click" class="w-full bg-red-600 p-4 rounded-2xl font-black uppercase shadow-lg text-white">Entrar al Taller</button>
             </div>
         </div>
     </div>
@@ -76,29 +75,29 @@
                 <input type="hidden" id="edit-id">
                 <input type="text" id="nombre" placeholder="NOMBRE DE LA PIEZA" class="w-full border-b-2 p-2 font-black uppercase outline-none focus:border-blue-500">
                 <select id="material" class="w-full border-b-2 p-2 font-bold outline-none uppercase italic"><option value="PLA">PLA</option><option value="PETG">PETG</option><option value="ABS">ABS</option><option value="FLEX">FLEX</option></select>
-                <textarea id="descripcion" placeholder="Notas..." class="w-full border-2 p-3 rounded-xl text-sm italic h-20 outline-none"></textarea>
+                <textarea id="descripcion" placeholder="Descripción para el cliente..." class="w-full border-2 p-3 rounded-xl text-sm italic h-24 outline-none focus:border-blue-400 transition-all"></textarea>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-slate-50 p-3 rounded-xl text-center"><label class="text-[10px] font-bold text-slate-400 block uppercase italic">Gramos</label><input type="number" id="gramos" class="bg-transparent text-center font-black w-full text-xl outline-none" oninput="calcular()"></div>
                     <div class="bg-slate-50 p-3 rounded-xl text-center"><label class="text-[10px] font-bold text-slate-400 block uppercase italic">Minutos</label><input type="number" id="minutos" class="bg-transparent text-center font-black w-full text-xl outline-none" oninput="calcular()"></div>
                 </div>
-                <div class="bg-blue-50 border-2 border-dashed border-blue-200 p-4 rounded-2xl text-center cursor-pointer" onclick="document.getElementById('foto').click()"><input type="file" id="foto" accept="image/*" capture="environment" class="hidden"><span id="txtFoto" class="font-black text-blue-600 uppercase text-[10px]">📸 Tomar Foto</span></div>
-                <div class="bg-slate-900 p-6 rounded-3xl text-center border-b-4 border-green-500 shadow-xl"><p id="precioFinal" class="text-5xl font-black text-green-400 italic">$0</p><p class="text-[8px] text-green-700 font-bold uppercase mt-1">Precio Redondeado x100</p></div>
-                <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase italic shadow-lg">Guardar Pieza</button>
+                <div class="bg-blue-50 border-2 border-dashed border-blue-200 p-4 rounded-2xl text-center cursor-pointer" onclick="document.getElementById('foto').click()"><input type="file" id="foto" accept="image/*" capture="environment" class="hidden"><span id="txtFoto" class="font-black text-blue-600 uppercase text-[10px]">📸 Tomar Foto Real</span></div>
+                <div class="bg-slate-900 p-6 rounded-3xl text-center border-b-4 border-green-500 shadow-xl"><p id="precioFinal" class="text-5xl font-black text-green-400 italic">$0</p><p class="text-[8px] text-green-700 font-bold uppercase mt-1">Precio Final Sugerido</p></div>
+                <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase italic shadow-lg active:scale-95 transition-all">Guardar en Catálogo</button>
             </div>
 
             <div id="sec-cata" class="seccion space-y-4">
-                <div class="flex items-center justify-between sticky top-[80px] bg-slate-100/90 py-2 z-40">
+                <div class="flex items-center justify-between sticky top-[80px] bg-slate-100/90 py-2 z-40 backdrop-blur-sm">
                     <button onclick="ver('inicio')" class="text-blue-500 font-bold text-xs uppercase italic">← Volver</button>
-                    <button onclick="compartirCatalogo()" class="bg-green-500 text-white text-[10px] font-bold py-2 px-4 rounded-full uppercase italic shadow-sm">📲 Compartir Todo</button>
+                    <button onclick="compartirCatalogo()" class="bg-green-600 text-white text-[10px] font-bold py-2 px-4 rounded-full uppercase italic shadow-lg flex items-center gap-2"><span>📲</span> Mi Catálogo</button>
                 </div>
-                <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 Buscar pieza..." class="w-full bg-white border-2 rounded-2xl px-4 py-3 text-sm font-bold outline-none mb-2">
+                <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 ¿Qué pieza buscas?" class="w-full bg-white border-2 rounded-2xl px-4 py-4 text-sm font-bold outline-none mb-2 shadow-sm focus:border-purple-400 transition-all">
                 <div id="grid-productos" class="grid grid-cols-2 gap-3 pb-24"></div>
             </div>
         </main>
     </div>
 
     <div id="modalDetalle" class="modal" onclick="cerrarDetalle()">
-        <div class="bg-white w-full max-w-sm rounded-[40px] overflow-hidden shadow-2xl relative" onclick="event.stopPropagation()">
+        <div class="bg-white w-full max-w-sm rounded-[40px] overflow-hidden shadow-2xl relative animate-in zoom-in duration-200" onclick="event.stopPropagation()">
             <img id="detImg" class="w-full h-72 object-cover border-b-4 border-red-600">
             <div class="p-6 space-y-4">
                 <div class="flex justify-between items-start">
@@ -107,16 +106,22 @@
                     </div>
                     <p id="detPre" class="text-2xl font-black text-blue-600 italic"></p>
                 </div>
-                <p id="detDes" class="text-sm text-slate-500 italic"></p>
-                <div class="grid grid-cols-3 gap-2 pt-4 border-t text-center text-slate-700">
-                    <div class="bg-slate-50 p-2 rounded-xl text-[10px] font-black"><span id="detMat"></span></div>
-                    <div class="bg-slate-50 p-2 rounded-xl text-[10px] font-black"><span id="detGra"></span></div>
-                    <div class="bg-slate-50 p-2 rounded-xl text-[10px] font-black"><span id="detTie"></span></div>
+                <div class="bg-slate-50 p-3 rounded-2xl border-l-4 border-blue-400">
+                    <p id="detDes" class="text-sm text-slate-600 italic leading-relaxed"></p>
                 </div>
-                <button id="btnCompPieza" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black uppercase text-xs italic">📲 Enviar a Cliente</button>
-                <div class="flex gap-2">
-                    <button id="btnEditar" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-2xl font-bold uppercase text-[10px]">✏️ Editar</button>
-                    <button id="btnBorrar" class="flex-1 bg-red-50 text-red-500 py-3 rounded-2xl font-bold uppercase text-[10px]">🗑️ Borrar</button>
+                <div class="grid grid-cols-3 gap-2 text-center text-slate-700">
+                    <div class="bg-slate-100 p-2 rounded-xl text-[10px] font-black uppercase"><span id="detMat"></span></div>
+                    <div class="bg-slate-100 p-2 rounded-xl text-[10px] font-black uppercase"><span id="detGra"></span></div>
+                    <div class="bg-slate-100 p-2 rounded-xl text-[10px] font-black uppercase"><span id="detTie"></span></div>
+                </div>
+                <div class="space-y-3 pt-2">
+                    <button id="btnCompPieza" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black uppercase text-sm italic shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all">
+                        <span>📲</span> ENVIAR OFERTA A CLIENTE
+                    </button>
+                    <div class="flex gap-2">
+                        <button id="btnEditar" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-2xl font-bold uppercase text-[10px]">✏️ Editar</button>
+                        <button id="btnBorrar" class="flex-1 bg-red-50 text-red-500 py-3 rounded-2xl font-bold uppercase text-[10px]">🗑️ Borrar</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -131,22 +136,18 @@
         let totalProductos = [];
         let usuarioActual = "";
 
-        // Función de inicio ultra-segura
         window.onload = function() {
             try {
-                if (typeof supabase === 'undefined') {
-                    document.getElementById('login-status').innerText = "Error: No se cargó la librería. Reintentando...";
-                    setTimeout(() => location.reload(), 2000);
-                    return;
-                }
                 supabaseClient = supabase.createClient(SB_URL, SB_KEY);
                 document.getElementById('login-status').innerText = "Acceso de Personal";
                 document.getElementById('login-form').style.opacity = "1";
                 document.getElementById('login-form').style.pointerEvents = "auto";
                 checkUser();
-            } catch (e) {
-                alert("Error crítico: " + e.message);
-            }
+                
+                // Si el link tiene una pieza específica (para el cliente)
+                const params = new URLSearchParams(window.location.search);
+                if(params.has('p')) setTimeout(() => verPiezaDirecta(params.get('p')), 1000);
+            } catch (e) { console.error(e); }
         };
 
         async function checkUser() {
@@ -161,27 +162,14 @@
         }
 
         async function login() {
-            const nombre = document.getElementById('log-nombre').value.toLowerCase().trim();
-            const pass = document.getElementById('log-pass').value;
-            const btn = document.getElementById('btn-login-click');
-            
-            if(!nombre || !pass) return alert("Completá los datos");
-            
-            btn.innerText = "VERIFICANDO...";
-            btn.disabled = true;
-
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ 
-                email: nombre + "@craig.com", 
-                password: pass 
-            });
-
-            if (error) { 
-                alert("Usuario o clave incorrectos"); 
-                btn.innerText = "Entrar"; 
-                btn.disabled = false;
-            } else { 
-                checkUser(); 
-            }
+            const n = document.getElementById('log-nombre').value.toLowerCase().trim();
+            const p = document.getElementById('log-pass').value;
+            const b = document.getElementById('btn-login-click');
+            if(!n || !p) return;
+            b.innerText = "ACCEDIENDO...";
+            const { error } = await supabaseClient.auth.signInWithPassword({ email: n + "@craig.com", password: p });
+            if (error) { alert("Usuario o clave incorrecta"); b.innerText = "Entrar al Taller"; }
+            else { checkUser(); }
         }
 
         async function logout() { await supabaseClient.auth.signOut(); location.reload(); }
@@ -197,11 +185,13 @@
         }
 
         function guardarConfig() {
-            config.filamento = parseFloat(document.getElementById('cfg-filamento').value) || 0;
-            config.luz = parseFloat(document.getElementById('cfg-luz').value) || 0;
-            config.desgaste = parseFloat(document.getElementById('cfg-desgaste').value) || 0;
-            config.error = parseFloat(document.getElementById('cfg-error').value) || 0;
-            config.ganancia = parseFloat(document.getElementById('cfg-ganancia').value) || 0;
+            config = {
+                filamento: parseFloat(document.getElementById('cfg-filamento').value),
+                luz: parseFloat(document.getElementById('cfg-luz').value),
+                desgaste: parseFloat(document.getElementById('cfg-desgaste').value),
+                error: parseFloat(document.getElementById('cfg-error').value),
+                ganancia: parseFloat(document.getElementById('cfg-ganancia').value)
+            };
             localStorage.setItem('craig3d_config', JSON.stringify(config));
             calcular();
         }
@@ -210,17 +200,15 @@
             document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
             document.getElementById('sec-' + id).classList.add('activa');
             if(id === 'cata') cargarCata();
-            window.scrollTo(0,0);
         }
 
         function calcular() {
             const g = parseFloat(document.getElementById('gramos').value) || 0;
             const m = parseFloat(document.getElementById('minutos').value) || 0;
-            const costoMat = (config.filamento / 1000) * g;
-            const costoTie = (config.luz + config.desgaste) * m;
-            const precioReal = (costoMat + costoTie) * (1 + config.error/100) * (1 + config.ganancia/100);
-            const precioRedondeado = Math.ceil(precioReal / 100) * 100;
-            document.getElementById('precioFinal').innerText = precioRedondeado > 0 ? '$' + precioRedondeado : '$0';
+            const cost = ((config.filamento/1000)*g) + ((config.luz + config.desgaste)*m);
+            const total = cost * (1 + config.error/100) * (1 + config.ganancia/100);
+            const redon = Math.ceil(total / 100) * 100;
+            document.getElementById('precioFinal').innerText = '$' + redon;
         }
 
         document.getElementById('foto').onchange = (e) => {
@@ -230,33 +218,21 @@
                     c.width = 600; c.height = i.height * s;
                     const ctx = c.getContext('2d'); ctx.drawImage(i, 0, 0, c.width, c.height);
                     fotoFinal = c.toDataURL('image/jpeg', 0.6);
-                    document.getElementById('txtFoto').innerText = "✅ FOTO LISTA";
+                    document.getElementById('txtFoto').innerText = "✅ FOTO PROCESADA";
                 }; i.src = ev.target.result;
             }; r.readAsDataURL(e.target.files[0]);
         };
-
-        function limpiarForm() {
-            document.getElementById('edit-id').value = ""; document.getElementById('nombre').value = "";
-            document.getElementById('descripcion').value = ""; document.getElementById('gramos').value = "";
-            document.getElementById('minutos').value = ""; document.getElementById('precioFinal').innerText = "$0";
-            document.getElementById('txtFoto').innerText = "📸 Tomar Foto"; fotoFinal = "";
-            document.getElementById('btnG').innerText = "Guardar Pieza";
-        }
 
         async function guardarPieza() {
             const id = document.getElementById('edit-id').value;
             const n = document.getElementById('nombre').value;
             const p = parseInt(document.getElementById('precioFinal').innerText.replace('$',''));
-            if(!n || isNaN(p) || p <= 0) return alert("Completá los datos");
+            if(!n || p <= 0) return alert("Faltan datos");
             
-            const btn = document.getElementById('btnG');
-            btn.innerText = "GUARDANDO...";
             const payload = { 
-                nombre: n, precio: p, 
+                nombre: n, precio: p, material: document.getElementById('material').value,
                 descripcion: document.getElementById('descripcion').value,
-                material: document.getElementById('material').value,
-                gramos: document.getElementById('gramos').value,
-                minutos: document.getElementById('minutos').value,
+                gramos: document.getElementById('gramos').value, minutos: document.getElementById('minutos').value,
                 creado_por: usuarioActual
             };
             if(fotoFinal) payload.imagen = fotoFinal;
@@ -264,8 +240,14 @@
             if(id) await supabaseClient.from('productos').update(payload).eq('id', id);
             else await supabaseClient.from('productos').insert([payload]);
             
-            limpiarForm();
-            ver('cata');
+            limpiarForm(); ver('cata');
+        }
+
+        function limpiarForm() {
+            document.getElementById('edit-id').value = ""; document.getElementById('nombre').value = "";
+            document.getElementById('descripcion').value = ""; document.getElementById('gramos').value = "";
+            document.getElementById('minutos').value = ""; document.getElementById('precioFinal').innerText = "$0";
+            document.getElementById('txtFoto').innerText = "📸 Tomar Foto Real"; fotoFinal = "";
         }
 
         async function cargarCata() {
@@ -275,27 +257,34 @@
 
         function renderCat(lista) {
             document.getElementById('grid-productos').innerHTML = lista.map(p => `
-                <div onclick="abrirDetalle('${encodeURIComponent(JSON.stringify(p))}')" 
-                     class="bg-white rounded-2xl shadow-sm overflow-hidden active:scale-95 flex flex-col border border-slate-100">
-                    <div class="aspect-square w-full bg-slate-100 relative">
-                        <img src="${p.imagen}" class="w-full h-full object-cover">
-                        <div class="absolute top-2 right-2 bg-black/40 backdrop-blur-md text-white text-[7px] px-2 py-0.5 rounded-full font-bold uppercase italic">
-                            ${p.material || 'PLA'}
-                        </div>
-                    </div>
-                    <div class="p-3 flex-1">
-                        <div class="text-blue-600 font-black text-xs mb-1 italic">$${p.precio}</div>
-                        <div class="text-[11px] font-bold uppercase text-slate-700 leading-tight line-clamp-2 italic">${p.nombre}</div>
+                <div onclick="abrirDetalle('${encodeURIComponent(JSON.stringify(p))}')" class="bg-white rounded-2xl shadow-sm overflow-hidden active:scale-95 transition-transform flex flex-col border border-slate-200">
+                    <img src="${p.imagen}" class="aspect-square w-full object-cover">
+                    <div class="p-3">
+                        <div class="text-blue-600 font-black text-xs italic">$${p.precio}</div>
+                        <div class="text-[11px] font-bold uppercase text-slate-700 line-clamp-2 italic">${p.nombre}</div>
                     </div>
                 </div>`).join('');
         }
 
+        // --- FUNCIONES DE PERSUASIÓN Y COMPARTIR ---
+
         function compartirCatalogo() {
-            window.open(`https://wa.me/?text=${encodeURIComponent('¡Hola! Te comparto nuestro catálogo de Craig 3D 🎨🚀\n\nPodés verlo acá:\n' + window.location.href)}`, '_blank');
+            const texto = `¡Hola! Soy ${usuarioActual} de *Craig 3D* 🎨🚀\n\nTe comparto nuestro catálogo exclusivo con todas nuestras piezas disponibles y precios actualizados.\n\n👇 Miralo acá:\n${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
         }
 
         function compartirPieza(p) {
-            window.open(`https://wa.me/?text=${encodeURIComponent('*' + p.nombre + '* 🚀\n\n💰 Precio: $' + p.precio + '\n🧵 Material: ' + p.material + '\n\n¡Consultanos por la tuya! 🎨')}`, '_blank');
+            // Creamos un link que al abrirse muestre solo esta pieza
+            const linkPieza = `${window.location.origin}${window.location.pathname}?p=${p.id}`;
+            
+            const texto = `*¡Mirá esta pieza que tenemos para vos!* 🚀✨\n\n🔥 *${p.nombre.toUpperCase()}*\n\n✅ *Material:* ${p.material} (Alta calidad)\n💰 *Precio:* $${p.precio}\n\n"${p.descripcion || 'Una pieza única fabricada con precisión 3D.'}"\n\n📸 *Ver foto y detalles completos aquí:* \n${linkPieza}\n\n¿Te gustaría encargarla? ¡Escribinos y la preparamos! 🎨`;
+            
+            window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
+        }
+
+        async function verPiezaDirecta(id) {
+            const { data } = await supabaseClient.from('productos').select('*').eq('id', id).single();
+            if(data) abrirDetalle(encodeURIComponent(JSON.stringify(data)));
         }
 
         function abrirDetalle(json) {
@@ -303,10 +292,10 @@
             document.getElementById('detImg').src = p.imagen;
             document.getElementById('detNom').innerText = p.nombre;
             document.getElementById('detPre').innerText = '$' + p.precio;
-            document.getElementById('detDes').innerText = p.descripcion || 'Sin descripción.';
-            document.getElementById('detMat').innerText = p.material || 'PLA';
-            document.getElementById('detGra').innerText = (p.gramos || 0) + ' gr';
-            document.getElementById('detTie').innerText = (p.minutos || 0) + ' min';
+            document.getElementById('detDes').innerText = p.descripcion || 'Sin descripción disponible.';
+            document.getElementById('detMat').innerText = 'Hilo: ' + p.material;
+            document.getElementById('detGra').innerText = p.gramos + 'g';
+            document.getElementById('detTie').innerText = p.minutos + 'm';
             document.getElementById('btnCompPieza').onclick = () => compartirPieza(p);
             document.getElementById('btnBorrar').onclick = () => borrar(p.id);
             document.getElementById('btnEditar').onclick = () => editar(p);
@@ -319,7 +308,7 @@
         }
 
         async function borrar(id) {
-            if(confirm("¿Borrar?")) { 
+            if(confirm("¿Eliminar del catálogo?")) { 
                 await supabaseClient.from('productos').delete().eq('id', id); 
                 cerrarDetalle(); cargarCata(); 
             }
