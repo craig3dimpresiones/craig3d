@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Craig 3D - Pro</title>
+    <title>Craig 3D - Precisión</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>.seccion { display: none; } .activa { display: block; }</style>
@@ -25,67 +25,60 @@
         </div>
 
         <div id="sec-config" class="seccion bg-white p-6 rounded-3xl shadow-xl space-y-4">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="font-black uppercase text-slate-700">Ajustes de Costos</h2>
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="font-black uppercase text-slate-700">Ajustes (por Minuto)</h2>
                 <button onclick="ver('inicio')" class="text-red-500 font-bold text-xs uppercase underline">Cerrar</button>
             </div>
-            <div class="grid grid-cols-1 gap-3">
-                <label class="text-xs font-bold text-slate-500 uppercase italic">Filamento x Kilo ($)</label>
-                <input type="number" id="cfg-filamento" class="border-2 p-3 rounded-xl font-bold bg-slate-50" onchange="guardarConfig()">
-                
-                <label class="text-xs font-bold text-slate-500 uppercase italic">Energía x Hora ($)</label>
-                <input type="number" id="cfg-energia" class="border-2 p-3 rounded-xl font-bold bg-slate-50" onchange="guardarConfig()">
-
-                <label class="text-xs font-bold text-slate-500 uppercase italic">Uso Máquina x Hora ($)</label>
-                <input type="number" id="cfg-maquina" class="border-2 p-3 rounded-xl font-bold bg-slate-50" onchange="guardarConfig()">
-
+            <div class="space-y-3">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase">Precio Rollo 1kg ($)</label>
+                    <input type="number" id="cfg-filamento" class="w-full border-2 p-3 rounded-xl font-bold bg-slate-50" onchange="guardarConfig()">
+                </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs font-bold text-slate-500 uppercase italic">% Error</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase">Luz x Minuto ($)</label>
+                        <input type="number" step="0.1" id="cfg-luz" class="w-full border-2 p-3 rounded-xl font-bold bg-slate-50" onchange="guardarConfig()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase">Desgaste x Min ($)</label>
+                        <input type="number" step="0.1" id="cfg-desgaste" class="w-full border-2 p-3 rounded-xl font-bold bg-slate-50" onchange="guardarConfig()">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase">% Error</label>
                         <input type="number" id="cfg-error" class="w-full border-2 p-3 rounded-xl font-bold bg-slate-50" onchange="guardarConfig()">
                     </div>
                     <div>
-                        <label class="text-xs font-bold text-slate-500 uppercase italic">% Ganancia</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase">% Ganancia</label>
                         <input type="number" id="cfg-ganancia" class="w-full border-2 p-3 rounded-xl font-bold bg-slate-50" onchange="guardarConfig()">
                     </div>
                 </div>
             </div>
-            <p class="text-[10px] text-slate-400 text-center italic mt-4 italic">Los cambios se guardan automáticamente.</p>
         </div>
 
         <div id="sec-calc" class="seccion bg-white p-6 rounded-3xl shadow-xl space-y-4">
             <button onclick="ver('inicio')" class="text-blue-500 font-bold text-xs uppercase">← Volver</button>
-            <input type="text" id="nombre" placeholder="Nombre de la pieza" class="w-full border-2 p-4 rounded-2xl font-bold">
+            <input type="text" id="nombre" placeholder="Nombre de la pieza" class="w-full border-2 p-4 rounded-2xl font-bold uppercase text-sm">
             
             <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="text-[10px] font-bold uppercase ml-2 text-slate-400">Gramos</label>
-                    <input type="number" id="gramos" placeholder="Gramos" class="w-full border-2 p-4 rounded-2xl text-center font-bold">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold uppercase ml-2 text-slate-400">Minutos</label>
-                    <input type="number" id="minutos" placeholder="Minutos" class="w-full border-2 p-4 rounded-2xl text-center font-bold">
-                </div>
+                <input type="number" id="gramos" placeholder="Gramos" class="border-2 p-4 rounded-2xl text-center font-bold">
+                <input type="number" id="minutos" placeholder="Minutos" class="border-2 p-4 rounded-2xl text-center font-bold">
             </div>
 
-            <div class="bg-blue-50 border-2 border-dashed p-4 rounded-2xl text-center cursor-pointer" onclick="document.getElementById('foto').click()">
+            <div class="bg-blue-50 border-2 border-dashed p-4 rounded-2xl text-center" onclick="document.getElementById('foto').click()">
                 <input type="file" id="foto" accept="image/*" capture="environment" class="hidden">
-                <span id="txtFoto" class="font-black text-blue-600 uppercase">📸 Sacar Foto</span>
+                <span id="txtFoto" class="font-black text-blue-600 uppercase text-xs">📸 Sacar Foto</span>
             </div>
 
-            <div class="bg-slate-900 p-6 rounded-3xl text-center shadow-inner">
-                <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Precio Sugerido</p>
+            <div class="bg-slate-900 p-6 rounded-3xl text-center">
                 <p id="precioFinal" class="text-5xl font-black text-green-400">$0</p>
             </div>
-            
-            <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase shadow-lg active:translate-y-1 transition-all">Guardar en Catálogo</button>
+            <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase">Guardar en Catálogo</button>
         </div>
 
         <div id="sec-cata" class="seccion space-y-4">
-            <div class="flex justify-between items-center">
-                <button onclick="ver('inicio')" class="text-blue-500 font-bold text-xs uppercase">← Volver</button>
-                <span class="text-[10px] font-bold text-slate-400 uppercase italic">Total: <span id="cant-piezas">0</span></span>
-            </div>
+            <button onclick="ver('inicio')" class="text-blue-500 font-bold text-xs uppercase">← Volver</button>
             <div id="grid-productos" class="space-y-4"></div>
         </div>
     </div>
@@ -96,31 +89,23 @@
         const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
         let fotoFinal = "";
 
-        // Valores por defecto
-        let config = {
-            filamento: 25000,
-            energia: 150,
-            maquina: 200,
-            error: 10,
-            ganancia: 50
-        };
+        // Configuración inicial basada en tu Excel
+        let config = { filamento: 21000, luz: 0.5, desgaste: 3.9, error: 10, ganancia: 80 };
 
-        // Cargar config al iniciar
         function init() {
             const saved = localStorage.getItem('craig3d_config');
             if(saved) config = JSON.parse(saved);
-            
             document.getElementById('cfg-filamento').value = config.filamento;
-            document.getElementById('cfg-energia').value = config.energia;
-            document.getElementById('cfg-maquina').value = config.maquina;
+            document.getElementById('cfg-luz').value = config.luz;
+            document.getElementById('cfg-desgaste').value = config.desgaste;
             document.getElementById('cfg-error').value = config.error;
             document.getElementById('cfg-ganancia').value = config.ganancia;
         }
 
         function guardarConfig() {
             config.filamento = parseFloat(document.getElementById('cfg-filamento').value) || 0;
-            config.energia = parseFloat(document.getElementById('cfg-energia').value) || 0;
-            config.maquina = parseFloat(document.getElementById('cfg-maquina').value) || 0;
+            config.luz = parseFloat(document.getElementById('cfg-luz').value) || 0;
+            config.desgaste = parseFloat(document.getElementById('cfg-desgaste').value) || 0;
             config.error = parseFloat(document.getElementById('cfg-error').value) || 0;
             config.ganancia = parseFloat(document.getElementById('cfg-ganancia').value) || 0;
             localStorage.setItem('craig3d_config', JSON.stringify(config));
@@ -136,18 +121,13 @@
         function calcular() {
             const g = parseFloat(document.getElementById('gramos').value) || 0;
             const m = parseFloat(document.getElementById('minutos').value) || 0;
-            const h = m / 60;
 
-            // Costo Material (Precio kilo / 1000 * gramos)
-            const costoMat = (config.filamento / 1000) * g;
-            // Costo Operativo (Luz + Desgaste) * horas
-            const costoOp = (config.energia + config.maquina) * h;
+            const costoMaterial = (config.filamento / 1000) * g;
+            const costoTiempo = (config.luz + config.desgaste) * m;
             
-            const costoBase = costoMat + costoOp;
-            // Sumar margen de error
-            const costoConError = costoBase * (1 + (config.error / 100));
-            // Sumar Ganancia
-            const final = costoConError * (1 + (config.ganancia / 100));
+            const subtotal = costoMaterial + costoTiempo;
+            const conError = subtotal * (1 + (config.error / 100));
+            const final = conError * (1 + (config.ganancia / 100));
 
             document.getElementById('precioFinal').innerText = '$' + Math.round(final);
         }
@@ -168,24 +148,18 @@
             const n = document.getElementById('nombre').value;
             const p = parseInt(document.getElementById('precioFinal').innerText.replace('$',''));
             if(!n || !fotoFinal) return alert("Falta nombre o foto");
-            const btn = document.getElementById('btnG');
-            btn.innerText = "SUBIENDO..."; btn.disabled = true;
-            const { error } = await supabaseClient.from('productos').insert([{ nombre: n, precio: p, imagen: fotoFinal }]);
-            if(!error) location.reload();
-            else { alert("Error al guardar"); btn.innerText = "Guardar"; btn.disabled = false; }
+            document.getElementById('btnG').innerText = "GUARDANDO...";
+            await supabaseClient.from('productos').insert([{ nombre: n, precio: p, imagen: fotoFinal }]);
+            location.reload();
         }
 
         async function cargarCata() {
             const { data } = await supabaseClient.from('productos').select('*').order('id', {ascending: false});
-            document.getElementById('cant-piezas').innerText = data.length;
             document.getElementById('grid-productos').innerHTML = data.map(p => `
                 <div class="bg-white p-4 rounded-3xl shadow flex items-center gap-4">
-                    <img src="${p.imagen}" class="w-16 h-16 object-cover rounded-xl bg-slate-100">
-                    <div class="flex-1">
-                        <div class="text-[10px] text-slate-400 font-black uppercase tracking-widest leading-none mb-1">Pieza</div>
-                        <div class="text-sm font-bold uppercase text-slate-700 leading-tight">${p.nombre}</div>
-                    </div>
-                    <div class="text-right font-black text-blue-600">$${p.precio}</div>
+                    <img src="${p.imagen}" class="w-16 h-16 object-cover rounded-xl">
+                    <div class="flex-1 text-sm font-bold uppercase text-slate-700">${p.nombre}</div>
+                    <div class="text-blue-600 font-black text-lg">$${p.precio}</div>
                 </div>`).join('');
         }
 
