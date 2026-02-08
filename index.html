@@ -7,30 +7,31 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body, html { overflow-x: hidden; height: 100%; }
+        body, html { overflow-x: hidden; min-height: 100%; }
         .seccion { display: none; } 
         .activa { display: block; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 50; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 150; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px); }
         .modal.open { display: flex; }
         #sec-login.hidden { display: none !important; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     </style>
 </head>
 <body class="bg-slate-100 font-sans">
 
-    <div id="sec-login" class="fixed inset-0 min-h-screen flex items-center justify-center p-6 bg-slate-900 text-white z-[100]">
+    <div id="sec-login" class="fixed inset-0 min-h-screen flex items-center justify-center p-6 bg-slate-900 text-white z-[200]">
         <div class="w-full max-w-sm space-y-6 text-center">
-            <h1 class="font-black text-4xl italic uppercase tracking-tighter">Craig <span class="text-red-600">3D</span></h1>
-            <p class="text-slate-400 text-sm italic">Ingreso de Personal</p>
+            <h1 class="font-black text-4xl italic uppercase tracking-tighter text-white">Craig <span class="text-red-600">3D</span></h1>
+            <p class="text-slate-400 text-sm italic">Acceso de Personal</p>
             <div class="space-y-3">
                 <input type="text" id="log-nombre" placeholder="Usuario" class="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-red-600 font-bold">
                 <input type="password" id="log-pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-red-600 font-bold">
-                <button onclick="login()" id="btn-login" class="w-full bg-red-600 p-4 rounded-2xl font-black uppercase shadow-lg active:scale-95 transition-all">Entrar</button>
+                <button onclick="login()" id="btn-login" class="w-full bg-red-600 p-4 rounded-2xl font-black uppercase shadow-lg active:scale-95 transition-all text-white">Entrar</button>
             </div>
         </div>
     </div>
 
     <div id="app-content" class="hidden min-h-screen flex flex-col">
-        <header class="bg-slate-900 text-white p-6 flex justify-between items-center border-b-4 border-red-600 shadow-xl">
+        <header class="bg-slate-900 text-white p-6 flex justify-between items-center border-b-4 border-red-600 shadow-xl sticky top-0 z-50">
             <h1 class="font-black text-xl italic uppercase tracking-tighter">Craig <span class="text-red-600">3D</span></h1>
             <div class="flex gap-4 items-center">
                 <button onclick="ver('config')" class="text-xl">⚙️</button>
@@ -41,34 +42,34 @@
         <main class="max-w-md mx-auto p-4 w-full flex-1">
             <div id="sec-inicio" class="seccion activa space-y-4 pt-4">
                 <div class="bg-white p-4 rounded-2xl shadow-sm text-center border-l-4 border-red-600">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase">Operador Actual</p>
-                    <p id="user-display" class="font-black text-slate-700 uppercase">---</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase italic">Operador Actual</p>
+                    <p id="user-display" class="font-black text-slate-700 uppercase italic">---</p>
                 </div>
-                <button onclick="ver('calc')" class="w-full bg-white p-6 rounded-3xl shadow-xl border-b-8 border-blue-500 font-black uppercase text-left flex justify-between items-center">
+                <button onclick="ver('calc')" class="w-full bg-white p-6 rounded-3xl shadow-xl border-b-8 border-blue-500 font-black uppercase text-left flex justify-between items-center active:scale-95 transition-all">
                     <span>🧮 Nueva Cotización</span> <span class="text-blue-500 text-2xl">+</span>
                 </button>
-                <button onclick="ver('cata')" class="w-full bg-white p-6 rounded-3xl shadow-xl border-b-8 border-purple-500 font-black uppercase text-left flex justify-between items-center">
+                <button onclick="ver('cata')" class="w-full bg-white p-6 rounded-3xl shadow-xl border-b-8 border-purple-500 font-black uppercase text-left flex justify-between items-center active:scale-95 transition-all">
                     <span>🖼️ Ver Catálogo</span> <span class="text-purple-500 text-2xl">➔</span>
                 </button>
             </div>
 
             <div id="sec-config" class="seccion bg-white p-6 rounded-3xl shadow-xl space-y-4">
                 <div class="flex justify-between items-center border-b pb-2">
-                    <h2 class="font-black uppercase text-slate-700 text-sm">Costos Base</h2>
+                    <h2 class="font-black uppercase text-slate-700 text-sm italic">Costos del Taller</h2>
                     <button onclick="ver('inicio')" class="text-red-500 font-bold text-xs uppercase underline">Cerrar</button>
                 </div>
                 <div class="space-y-3">
                     <div class="bg-slate-50 p-3 rounded-xl">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase italic">Filamento x Kilo ($)</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase italic italic">Filamento x Kilo ($)</label>
                         <input type="number" id="cfg-filamento" class="w-full bg-transparent font-bold text-lg outline-none" onchange="guardarConfig()">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div class="bg-slate-50 p-3 rounded-xl">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase italic">Luz x Min ($)</label>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase italic italic italic">Luz x Min ($)</label>
                             <input type="number" step="0.1" id="cfg-luz" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()">
                         </div>
                         <div class="bg-slate-50 p-3 rounded-xl">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase italic">Máquina x Min ($)</label>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase italic italic">Máquina x Min ($)</label>
                             <input type="number" step="0.1" id="cfg-desgaste" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()">
                         </div>
                     </div>
@@ -76,69 +77,70 @@
             </div>
 
             <div id="sec-calc" class="seccion bg-white p-6 rounded-3xl shadow-xl space-y-4">
-                <button onclick="limpiarForm(); ver('inicio')" class="text-blue-500 font-bold text-xs uppercase italic">← Volver</button>
+                <button onclick="limpiarForm(); ver('inicio')" class="text-blue-500 font-bold text-xs uppercase italic italic">← Volver</button>
                 <input type="hidden" id="edit-id">
                 <input type="text" id="nombre" placeholder="NOMBRE DE LA PIEZA" class="w-full border-b-2 p-2 font-black uppercase focus:border-blue-500 outline-none">
                 
-                <select id="material" class="w-full border-b-2 p-2 font-bold bg-white outline-none">
+                <select id="material" class="w-full border-b-2 p-2 font-bold bg-white outline-none uppercase italic">
                     <option value="PLA">PLA</option><option value="PETG">PETG</option>
                     <option value="ABS">ABS</option><option value="FLEX">FLEX</option>
                 </select>
 
-                <textarea id="descripcion" placeholder="Descripción..." class="w-full border-2 p-3 rounded-xl text-sm italic h-20 outline-none"></textarea>
+                <textarea id="descripcion" placeholder="Notas adicionales..." class="w-full border-2 p-3 rounded-xl text-sm italic h-20 outline-none"></textarea>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-slate-50 p-3 rounded-xl text-center">
-                        <label class="text-[10px] font-bold text-slate-400 block mb-1 uppercase italic">Gramos</label>
+                        <label class="text-[10px] font-bold text-slate-400 block mb-1 uppercase italic italic">Gramos</label>
                         <input type="number" id="gramos" class="bg-transparent text-center font-black w-full text-xl outline-none" oninput="calcular()">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl text-center">
-                        <label class="text-[10px] font-bold text-slate-400 block mb-1 uppercase italic">Minutos</label>
+                        <label class="text-[10px] font-bold text-slate-400 block mb-1 uppercase italic italic">Minutos</label>
                         <input type="number" id="minutos" class="bg-transparent text-center font-black w-full text-xl outline-none" oninput="calcular()">
                     </div>
                 </div>
 
                 <div class="bg-blue-50 border-2 border-dashed border-blue-200 p-4 rounded-2xl text-center" onclick="document.getElementById('foto').click()">
                     <input type="file" id="foto" accept="image/*" capture="environment" class="hidden">
-                    <span id="txtFoto" class="font-black text-blue-600 uppercase text-[10px]">📸 Tomar Fotografía</span>
+                    <span id="txtFoto" class="font-black text-blue-600 uppercase text-[10px]">📸 Tomar Foto de la pieza</span>
                 </div>
 
                 <div class="bg-slate-900 p-6 rounded-3xl text-center border-b-4 border-green-500 shadow-inner">
                     <p id="precioFinal" class="text-5xl font-black text-green-400">$0</p>
                 </div>
-                <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase shadow-lg">Guardar Pieza</button>
+                <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase shadow-lg active:scale-95 transition-all italic">Guardar Pieza</button>
             </div>
 
             <div id="sec-cata" class="seccion space-y-4">
-                <div class="flex items-center justify-between">
-                    <button onclick="ver('inicio')" class="text-blue-500 font-bold text-xs uppercase italic">← Volver</button>
-                    <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 Buscar..." class="bg-white border-2 rounded-full px-4 py-1 text-sm font-bold outline-none w-1/2">
+                <div class="flex items-center justify-between sticky top-[80px] bg-slate-100/90 backdrop-blur-sm py-2 z-40">
+                    <button onclick="ver('inicio')" class="text-blue-500 font-bold text-xs uppercase italic italic">← Volver</button>
+                    <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 Buscar..." class="bg-white border-2 rounded-full px-4 py-1 text-sm font-bold outline-none w-1/2 shadow-sm">
                 </div>
-                <div id="grid-productos" class="grid grid-cols-1 gap-3 pb-10"></div>
+                <div id="grid-productos" class="grid grid-cols-2 gap-3 pb-24 italic">
+                    </div>
             </div>
         </main>
     </div>
 
     <div id="modalDetalle" class="modal" onclick="cerrarDetalle()">
         <div class="bg-white w-full max-w-sm rounded-[40px] overflow-hidden shadow-2xl relative" onclick="event.stopPropagation()">
-            <img id="detImg" class="w-full h-64 object-cover border-b-4 border-red-600">
+            <img id="detImg" class="w-full h-72 object-cover border-b-4 border-red-600">
             <div class="p-6 space-y-4">
                 <div class="flex justify-between items-start">
-                    <div>
+                    <div class="flex-1">
                         <h3 id="detNom" class="font-black text-2xl uppercase text-slate-800 leading-none"></h3>
-                        <p id="detCreador" class="text-[8px] font-bold text-slate-400 uppercase mt-1 italic"></p>
+                        <p id="detCreador" class="text-[9px] font-bold text-slate-400 uppercase mt-2 italic"></p>
                     </div>
-                    <p id="detPre" class="text-2xl font-black text-blue-600"></p>
+                    <p id="detPre" class="text-2xl font-black text-blue-600 italic"></p>
                 </div>
                 <p id="detDes" class="text-sm text-slate-500 italic"></p>
                 <div class="grid grid-cols-3 gap-2 pt-4 border-t text-center">
-                    <div><p class="text-[8px] font-bold text-slate-400 uppercase italic">Mat.</p><p id="detMat" class="font-black text-[10px] text-red-600 uppercase"></p></div>
-                    <div><p class="text-[8px] font-bold text-slate-400 uppercase italic">Peso</p><p id="detGra" class="font-black text-xs text-slate-700"></p></div>
-                    <div><p class="text-[8px] font-bold text-slate-400 uppercase italic">Tiempo</p><p id="detTie" class="font-black text-xs text-slate-700"></p></div>
+                    <div class="bg-slate-50 p-2 rounded-xl"><p class="text-[8px] font-bold text-slate-400 uppercase italic">Mat.</p><p id="detMat" class="font-black text-[10px] text-red-600 uppercase"></p></div>
+                    <div class="bg-slate-50 p-2 rounded-xl"><p class="text-[8px] font-bold text-slate-400 uppercase italic">Peso</p><p id="detGra" class="font-black text-xs text-slate-700"></p></div>
+                    <div class="bg-slate-50 p-2 rounded-xl"><p class="text-[8px] font-bold text-slate-400 uppercase italic">Tiempo</p><p id="detTie" class="font-black text-xs text-slate-700"></p></div>
                 </div>
                 <div class="flex gap-2 pt-2">
-                    <button id="btnEditar" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-2xl font-bold uppercase text-xs">✏️ Editar</button>
-                    <button id="btnBorrar" class="flex-1 bg-red-50 text-red-500 py-3 rounded-2xl font-bold uppercase text-xs">🗑️ Borrar</button>
+                    <button id="btnEditar" class="flex-1 bg-slate-100 text-slate-700 py-4 rounded-2xl font-bold uppercase text-[10px] italic">✏️ Editar</button>
+                    <button id="btnBorrar" class="flex-1 bg-red-50 text-red-500 py-4 rounded-2xl font-bold uppercase text-[10px] italic">🗑️ Borrar</button>
                 </div>
             </div>
         </div>
@@ -154,14 +156,13 @@
         let totalProductos = [];
         let usuarioActual = "";
 
-        // --- MANEJO DE SESION ---
         async function checkUser() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             if (user) {
                 usuarioActual = user.email.split('@')[0];
                 document.getElementById('user-display').innerText = usuarioActual;
-                document.getElementById('sec-login').style.display = 'none'; // OCULTA EL LOGIN
-                document.getElementById('app-content').classList.remove('hidden'); // MUESTRA LA APP
+                document.getElementById('sec-login').style.display = 'none';
+                document.getElementById('app-content').classList.remove('hidden');
                 init();
             }
         }
@@ -175,12 +176,11 @@
             const emailFake = nombre + "@craig.com";
             const { error } = await supabaseClient.auth.signInWithPassword({ email: emailFake, password: pass });
             if (error) { alert("Usuario o clave incorrecta"); btn.innerText = "Entrar"; }
-            else { checkUser(); } // Re-chequea usuario para cambiar pantalla
+            else { checkUser(); }
         }
 
         async function logout() { await supabaseClient.auth.signOut(); location.reload(); }
 
-        // --- FUNCIONES CORE ---
         function init() {
             const saved = localStorage.getItem('craig3d_config');
             if(saved) config = JSON.parse(saved);
@@ -201,6 +201,7 @@
             document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
             document.getElementById('sec-' + id).classList.add('activa');
             if(id === 'cata') cargarCata();
+            window.scrollTo(0,0);
         }
 
         function calcular() {
@@ -228,7 +229,7 @@
             document.getElementById('edit-id').value = ""; document.getElementById('nombre').value = "";
             document.getElementById('descripcion').value = ""; document.getElementById('gramos').value = "";
             document.getElementById('minutos').value = ""; document.getElementById('precioFinal').innerText = "$0";
-            document.getElementById('txtFoto').innerText = "📸 Tomar Fotografía"; fotoFinal = "";
+            document.getElementById('txtFoto').innerText = "📸 Tomar Foto"; fotoFinal = "";
         }
 
         async function guardarPieza() {
@@ -259,14 +260,23 @@
 
         function renderCat(lista) {
             document.getElementById('grid-productos').innerHTML = lista.map(p => `
-                <div onclick="abrirDetalle('${encodeURIComponent(JSON.stringify(p))}')" class="bg-white p-4 rounded-3xl shadow flex items-center gap-4 active:scale-95 transition-all">
-                    <img src="${p.imagen}" class="w-16 h-16 object-cover rounded-xl shadow-sm">
-                    <div class="flex-1 truncate">
-                        <div class="text-[8px] font-black text-red-500 uppercase">${p.material || 'PLA'}</div>
-                        <div class="text-sm font-bold uppercase text-slate-700 truncate">${p.nombre}</div>
-                        <div class="text-[7px] text-slate-400 uppercase italic">Por: ${p.creado_por || 'Craig'}</div>
+                <div onclick="abrirDetalle('${encodeURIComponent(JSON.stringify(p))}')" 
+                     class="bg-white rounded-2xl shadow-sm overflow-hidden active:scale-95 transition-all flex flex-col border border-slate-100">
+                    <div class="aspect-square w-full bg-slate-100 relative">
+                        <img src="${p.imagen}" class="w-full h-full object-cover">
+                        <div class="absolute top-2 right-2 bg-black/40 backdrop-blur-md text-white text-[7px] px-2 py-0.5 rounded-full font-bold uppercase italic">
+                            ${p.material || 'PLA'}
+                        </div>
                     </div>
-                    <div class="text-blue-600 font-black">$${p.precio}</div>
+                    <div class="p-3 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="text-blue-600 font-black text-xs mb-1">$${p.precio}</div>
+                            <div class="text-[11px] font-bold uppercase text-slate-700 leading-tight line-clamp-2 italic">${p.nombre}</div>
+                        </div>
+                        <div class="mt-2 pt-2 border-t flex justify-between items-center">
+                            <span class="text-[7px] text-slate-400 uppercase italic">Por: ${p.creado_por || 'Craig'}</span>
+                        </div>
+                    </div>
                 </div>`).join('');
         }
 
@@ -280,7 +290,7 @@
             document.getElementById('detImg').src = p.imagen;
             document.getElementById('detNom').innerText = p.nombre;
             document.getElementById('detPre').innerText = '$' + p.precio;
-            document.getElementById('detDes').innerText = p.descripcion || 'Sin descripción.';
+            document.getElementById('detDes').innerText = p.descripcion || 'Sin descripción adicional.';
             document.getElementById('detMat').innerText = p.material || 'PLA';
             document.getElementById('detGra').innerText = (p.gramos || 0) + ' gr';
             document.getElementById('detTie').innerText = (p.minutos || 0) + ' min';
@@ -291,7 +301,7 @@
         }
 
         async function borrar(id) {
-            if(confirm("¿Eliminar?")) { await supabaseClient.from('productos').delete().eq('id', id); location.reload(); }
+            if(confirm("¿Eliminar del catálogo?")) { await supabaseClient.from('productos').delete().eq('id', id); location.reload(); }
         }
 
         function editar(p) {
