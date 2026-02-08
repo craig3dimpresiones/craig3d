@@ -24,7 +24,7 @@
             <div class="space-y-3">
                 <input type="text" id="log-nombre" placeholder="Usuario" class="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-red-600 font-bold">
                 <input type="password" id="log-pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl bg-slate-800 border border-slate-700 text-white outline-none focus:border-red-600 font-bold">
-                <button onclick="login()" id="btn-login" class="w-full bg-red-600 p-4 rounded-2xl font-black uppercase shadow-lg active:scale-95 transition-all text-white">Entrar</button>
+                <button id="btn-login-click" class="w-full bg-red-600 p-4 rounded-2xl font-black uppercase shadow-lg active:scale-95 transition-all text-white">Entrar</button>
             </div>
         </div>
     </div>
@@ -54,33 +54,18 @@
 
             <div id="sec-config" class="seccion bg-white p-6 rounded-3xl shadow-xl space-y-4">
                 <div class="flex justify-between items-center border-b pb-2">
-                    <h2 class="font-black uppercase text-slate-700 text-sm italic">Costos del Taller</h2>
+                    <h2 class="font-black uppercase text-slate-700 text-sm italic italic">Costos del Taller</h2>
                     <button onclick="ver('inicio')" class="text-red-500 font-bold text-xs uppercase underline">Cerrar</button>
                 </div>
                 <div class="space-y-3">
-                    <div class="bg-slate-50 p-3 rounded-xl">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase italic">Filamento x Kilo ($)</label>
-                        <input type="number" id="cfg-filamento" class="w-full bg-transparent font-bold text-lg outline-none" onchange="guardarConfig()">
-                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-slate-500 uppercase">Filamento x Kilo ($)</label><input type="number" id="cfg-filamento" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()"></div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-slate-50 p-3 rounded-xl">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase italic">Luz x Min ($)</label>
-                            <input type="number" step="0.1" id="cfg-luz" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()">
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase italic">Máquina x Min ($)</label>
-                            <input type="number" step="0.1" id="cfg-desgaste" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()">
-                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-slate-500 uppercase">Luz x Min ($)</label><input type="number" step="0.1" id="cfg-luz" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()"></div>
+                        <div class="bg-slate-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-slate-500 uppercase">Máquina x Min ($)</label><input type="number" step="0.1" id="cfg-desgaste" class="w-full bg-transparent font-bold outline-none" onchange="guardarConfig()"></div>
                     </div>
                     <div class="grid grid-cols-2 gap-3 border-t pt-3">
-                        <div class="bg-red-50 p-3 rounded-xl">
-                            <label class="text-[10px] font-bold text-red-400 uppercase italic">Margen Error (%)</label>
-                            <input type="number" id="cfg-error" class="w-full bg-transparent font-bold outline-none text-red-600" onchange="guardarConfig()">
-                        </div>
-                        <div class="bg-green-50 p-3 rounded-xl">
-                            <label class="text-[10px] font-bold text-green-400 uppercase italic">Ganancia (%)</label>
-                            <input type="number" id="cfg-ganancia" class="w-full bg-transparent font-bold outline-none text-green-600" onchange="guardarConfig()">
-                        </div>
+                        <div class="bg-red-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-red-400 uppercase">Error (%)</label><input type="number" id="cfg-error" class="w-full bg-transparent font-bold outline-none text-red-600" onchange="guardarConfig()"></div>
+                        <div class="bg-green-50 p-3 rounded-xl"><label class="text-[10px] font-bold text-green-400 uppercase">Ganancia (%)</label><input type="number" id="cfg-ganancia" class="w-full bg-transparent font-bold outline-none text-green-600" onchange="guardarConfig()"></div>
                     </div>
                 </div>
             </div>
@@ -88,43 +73,24 @@
             <div id="sec-calc" class="seccion bg-white p-6 rounded-3xl shadow-xl space-y-4">
                 <button onclick="limpiarForm(); ver('inicio')" class="text-blue-500 font-bold text-xs uppercase italic">← Volver</button>
                 <input type="hidden" id="edit-id">
-                <input type="text" id="nombre" placeholder="NOMBRE DE LA PIEZA" class="w-full border-b-2 p-2 font-black uppercase focus:border-blue-500 outline-none">
-                
-                <select id="material" class="w-full border-b-2 p-2 font-bold bg-white outline-none uppercase italic">
-                    <option value="PLA">PLA</option><option value="PETG">PETG</option>
-                    <option value="ABS">ABS</option><option value="FLEX">FLEX</option>
-                </select>
-
-                <textarea id="descripcion" placeholder="Notas adicionales..." class="w-full border-2 p-3 rounded-xl text-sm italic h-20 outline-none"></textarea>
-                
+                <input type="text" id="nombre" placeholder="NOMBRE DE LA PIEZA" class="w-full border-b-2 p-2 font-black uppercase outline-none italic">
+                <select id="material" class="w-full border-b-2 p-2 font-bold outline-none uppercase italic"><option value="PLA">PLA</option><option value="PETG">PETG</option><option value="ABS">ABS</option><option value="FLEX">FLEX</option></select>
+                <textarea id="descripcion" placeholder="Notas..." class="w-full border-2 p-3 rounded-xl text-sm italic h-20 outline-none"></textarea>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-slate-50 p-3 rounded-xl text-center">
-                        <label class="text-[10px] font-bold text-slate-400 block mb-1 uppercase italic">Gramos</label>
-                        <input type="number" id="gramos" class="bg-transparent text-center font-black w-full text-xl outline-none" oninput="calcular()">
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded-xl text-center">
-                        <label class="text-[10px] font-bold text-slate-400 block mb-1 uppercase italic">Minutos</label>
-                        <input type="number" id="minutos" class="bg-transparent text-center font-black w-full text-xl outline-none" oninput="calcular()">
-                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl text-center"><label class="text-[10px] font-bold text-slate-400 block uppercase italic">Gramos</label><input type="number" id="gramos" class="bg-transparent text-center font-black w-full text-xl outline-none" oninput="calcular()"></div>
+                    <div class="bg-slate-50 p-3 rounded-xl text-center"><label class="text-[10px] font-bold text-slate-400 block uppercase italic">Minutos</label><input type="number" id="minutos" class="bg-transparent text-center font-black w-full text-xl outline-none" oninput="calcular()"></div>
                 </div>
-
-                <div class="bg-blue-50 border-2 border-dashed border-blue-200 p-4 rounded-2xl text-center" onclick="document.getElementById('foto').click()">
-                    <input type="file" id="foto" accept="image/*" capture="environment" class="hidden">
-                    <span id="txtFoto" class="font-black text-blue-600 uppercase text-[10px]">📸 Tomar Foto</span>
-                </div>
-
-                <div class="bg-slate-900 p-6 rounded-3xl text-center border-b-4 border-green-500 shadow-inner">
-                    <p id="precioFinal" class="text-5xl font-black text-green-400">$0</p>
-                </div>
-                <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase shadow-lg active:scale-95 transition-all italic italic">Guardar Pieza</button>
+                <div class="bg-blue-50 border-2 border-dashed border-blue-200 p-4 rounded-2xl text-center" onclick="document.getElementById('foto').click()"><input type="file" id="foto" accept="image/*" capture="environment" class="hidden"><span id="txtFoto" class="font-black text-blue-600 uppercase text-[10px]">📸 Tomar Foto</span></div>
+                <div class="bg-slate-900 p-6 rounded-3xl text-center border-b-4 border-green-500"><p id="precioFinal" class="text-5xl font-black text-green-400 italic">$0</p></div>
+                <button onclick="guardarPieza()" id="btnG" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase italic italic shadow-lg">Guardar Pieza</button>
             </div>
 
             <div id="sec-cata" class="seccion space-y-4">
-                <div class="flex items-center justify-between sticky top-[80px] bg-slate-100/90 backdrop-blur-sm py-2 z-40">
-                    <button onclick="ver('inicio')" class="text-blue-500 font-bold text-xs uppercase italic italic">← Volver</button>
-                    <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 Buscar..." class="bg-white border-2 rounded-full px-4 py-1 text-sm font-bold outline-none w-1/2 shadow-sm">
+                <div class="flex items-center justify-between sticky top-[80px] bg-slate-100/90 py-2 z-40">
+                    <button onclick="ver('inicio')" class="text-blue-500 font-bold text-xs uppercase italic">← Volver</button>
+                    <input type="text" id="buscador" oninput="filtrar()" placeholder="🔍 Buscar..." class="bg-white border-2 rounded-full px-4 py-1 text-sm font-bold w-1/2">
                 </div>
-                <div id="grid-productos" class="grid grid-cols-2 gap-3 pb-24"></div>
+                <div id="grid-productos" class="grid grid-cols-2 gap-3 pb-24 italic"></div>
             </div>
         </main>
     </div>
@@ -135,7 +101,7 @@
             <div class="p-6 space-y-4">
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
-                        <h3 id="detNom" class="font-black text-2xl uppercase text-slate-800 leading-none"></h3>
+                        <h3 id="detNom" class="font-black text-2xl uppercase text-slate-800 leading-none italic"></h3>
                         <p id="detCreador" class="text-[9px] font-bold text-slate-400 uppercase mt-2 italic"></p>
                     </div>
                     <p id="detPre" class="text-2xl font-black text-blue-600 italic"></p>
@@ -148,4 +114,204 @@
                 </div>
                 <div class="flex gap-2 pt-2">
                     <button id="btnEditar" class="flex-1 bg-slate-100 text-slate-700 py-4 rounded-2xl font-bold uppercase text-[10px] italic">✏️ Editar</button>
-                    <button id="btn
+                    <button id="btnBorrar" class="flex-1 bg-red-50 text-red-500 py-4 rounded-2xl font-bold uppercase text-[10px] italic">🗑️ Borrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SB_URL = 'https://acsxhpotasjilafhqmoz.supabase.co'; 
+        const SB_KEY = 'sb_publishable_sDXHl5jEwIRktVlJbIH2Lg_EYYMd_bF';
+        let supabaseClient;
+        
+        let config = { filamento: 21000, luz: 0.5, desgaste: 3.9, error: 10, ganancia: 80 };
+        let fotoFinal = "";
+        let totalProductos = [];
+        let usuarioActual = "";
+
+        // Inicializar Supabase al cargar
+        window.onload = () => {
+            supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+            checkUser();
+            
+            // Conectar el botón de login manualmente para asegurar que funcione
+            document.getElementById('btn-login-click').addEventListener('click', login);
+        };
+
+        async function checkUser() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (user) {
+                usuarioActual = user.email.split('@')[0];
+                document.getElementById('user-display').innerText = usuarioActual;
+                document.getElementById('sec-login').style.display = 'none';
+                document.getElementById('app-content').classList.remove('hidden');
+                init();
+            }
+        }
+
+        async function login() {
+            const nombre = document.getElementById('log-nombre').value.toLowerCase().trim();
+            const pass = document.getElementById('log-pass').value;
+            const btn = document.getElementById('btn-login-click');
+            
+            if(!nombre || !pass) return alert("Completá los datos");
+            
+            btn.innerText = "ACCEDIENDO...";
+            const emailFake = nombre + "@craig.com";
+            
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email: emailFake, password: pass });
+            
+            if (error) { 
+                alert("Error: " + error.message); 
+                btn.innerText = "Entrar"; 
+            } else { 
+                checkUser(); 
+            }
+        }
+
+        async function logout() { await supabaseClient.auth.signOut(); location.reload(); }
+
+        function init() {
+            const saved = localStorage.getItem('craig3d_config');
+            if(saved) config = JSON.parse(saved);
+            document.getElementById('cfg-filamento').value = config.filamento;
+            document.getElementById('cfg-luz').value = config.luz;
+            document.getElementById('cfg-desgaste').value = config.desgaste;
+            document.getElementById('cfg-error').value = config.error;
+            document.getElementById('cfg-ganancia').value = config.ganancia;
+        }
+
+        function guardarConfig() {
+            config.filamento = parseFloat(document.getElementById('cfg-filamento').value) || 0;
+            config.luz = parseFloat(document.getElementById('cfg-luz').value) || 0;
+            config.desgaste = parseFloat(document.getElementById('cfg-desgaste').value) || 0;
+            config.error = parseFloat(document.getElementById('cfg-error').value) || 0;
+            config.ganancia = parseFloat(document.getElementById('cfg-ganancia').value) || 0;
+            localStorage.setItem('craig3d_config', JSON.stringify(config));
+            calcular();
+        }
+
+        function ver(id) {
+            document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
+            document.getElementById('sec-' + id).classList.add('activa');
+            if(id === 'cata') cargarCata();
+            window.scrollTo(0,0);
+        }
+
+        function calcular() {
+            const g = parseFloat(document.getElementById('gramos').value) || 0;
+            const m = parseFloat(document.getElementById('minutos').value) || 0;
+            const costoMat = (config.filamento / 1000) * g;
+            const costoTie = (config.luz + config.desgaste) * m;
+            const total = (costoMat + costoTie) * (1 + config.error/100) * (1 + config.ganancia/100);
+            document.getElementById('precioFinal').innerText = '$' + Math.round(total);
+        }
+
+        document.getElementById('foto').onchange = (e) => {
+            const r = new FileReader(); r.onload = (ev) => {
+                const i = new Image(); i.onload = () => {
+                    const c = document.createElement('canvas'); const s = 600 / i.width;
+                    c.width = 600; c.height = i.height * s;
+                    const ctx = c.getContext('2d'); ctx.drawImage(i, 0, 0, c.width, c.height);
+                    fotoFinal = c.toDataURL('image/jpeg', 0.6);
+                    document.getElementById('txtFoto').innerText = "✅ FOTO LISTA";
+                }; i.src = ev.target.result;
+            }; r.readAsDataURL(e.target.files[0]);
+        };
+
+        function limpiarForm() {
+            document.getElementById('edit-id').value = ""; document.getElementById('nombre').value = "";
+            document.getElementById('descripcion').value = ""; document.getElementById('gramos').value = "";
+            document.getElementById('minutos').value = ""; document.getElementById('precioFinal').innerText = "$0";
+            document.getElementById('txtFoto').innerText = "📸 Tomar Foto"; fotoFinal = "";
+        }
+
+        async function guardarPieza() {
+            const id = document.getElementById('edit-id').value;
+            const n = document.getElementById('nombre').value;
+            const p = parseInt(document.getElementById('precioFinal').innerText.replace('$',''));
+            if(!n) return alert("Nombre obligatorio");
+            
+            const payload = { 
+                nombre: n, precio: p, 
+                descripcion: document.getElementById('descripcion').value,
+                material: document.getElementById('material').value,
+                gramos: document.getElementById('gramos').value,
+                minutos: document.getElementById('minutos').value,
+                creado_por: usuarioActual
+            };
+            if(fotoFinal) payload.imagen = fotoFinal;
+
+            if(id) await supabaseClient.from('productos').update(payload).eq('id', id);
+            else await supabaseClient.from('productos').insert([payload]);
+            location.reload();
+        }
+
+        async function cargarCata() {
+            const { data } = await supabaseClient.from('productos').select('*').order('id', {ascending: false});
+            totalProductos = data || []; renderCat(totalProductos);
+        }
+
+        function renderCat(lista) {
+            document.getElementById('grid-productos').innerHTML = lista.map(p => `
+                <div onclick="abrirDetalle('${encodeURIComponent(JSON.stringify(p))}')" 
+                     class="bg-white rounded-2xl shadow-sm overflow-hidden active:scale-95 transition-all flex flex-col border border-slate-100">
+                    <div class="aspect-square w-full bg-slate-100 relative">
+                        <img src="${p.imagen}" class="w-full h-full object-cover">
+                        <div class="absolute top-2 right-2 bg-black/40 backdrop-blur-md text-white text-[7px] px-2 py-0.5 rounded-full font-bold uppercase italic italic">
+                            ${p.material || 'PLA'}
+                        </div>
+                    </div>
+                    <div class="p-3 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="text-blue-600 font-black text-xs mb-1 italic">$${p.precio}</div>
+                            <div class="text-[11px] font-bold uppercase text-slate-700 leading-tight line-clamp-2 italic italic">${p.nombre}</div>
+                        </div>
+                        <div class="mt-2 pt-2 border-t flex justify-between items-center">
+                            <span class="text-[7px] text-slate-400 uppercase italic">Por: ${p.creado_por || 'Craig'}</span>
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function filtrar() {
+            const t = document.getElementById('buscador').value.toLowerCase();
+            renderCat(totalProductos.filter(p => p.nombre.toLowerCase().includes(t)));
+        }
+
+        function abrirDetalle(json) {
+            const p = JSON.parse(decodeURIComponent(json));
+            document.getElementById('detImg').src = p.imagen;
+            document.getElementById('detNom').innerText = p.nombre;
+            document.getElementById('detPre').innerText = '$' + p.precio;
+            document.getElementById('detDes').innerText = p.descripcion || 'Sin descripción.';
+            document.getElementById('detMat').innerText = p.material || 'PLA';
+            document.getElementById('detGra').innerText = (p.gramos || 0) + ' gr';
+            document.getElementById('detTie').innerText = (p.minutos || 0) + ' min';
+            document.getElementById('detCreador').innerText = "Cargado por: " + (p.creado_por || 'Craig');
+            document.getElementById('btnBorrar').onclick = () => borrar(p.id);
+            document.getElementById('btnEditar').onclick = () => editar(p);
+            document.getElementById('modalDetalle').classList.add('open');
+        }
+
+        async function borrar(id) {
+            if(confirm("¿Borrar?")) { await supabaseClient.from('productos').delete().eq('id', id); location.reload(); }
+        }
+
+        function editar(p) {
+            cerrarDetalle(); ver('calc');
+            document.getElementById('edit-id').value = p.id;
+            document.getElementById('nombre').value = p.nombre;
+            document.getElementById('descripcion').value = p.descripcion;
+            document.getElementById('material').value = p.material;
+            document.getElementById('gramos').value = p.gramos;
+            document.getElementById('minutos').value = p.minutos;
+            calcular();
+            document.getElementById('btnG').innerText = "ACTUALIZAR PIEZA";
+        }
+
+        function cerrarDetalle() { document.getElementById('modalDetalle').classList.remove('open'); }
+    </script>
+</body>
+</html>
