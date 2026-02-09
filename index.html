@@ -12,12 +12,14 @@
         .activa { display: block !important; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 150; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px); }
         .modal.open { display: flex; }
-        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         
         /* Visibilidad según rol */
         .admin-only { display: none !important; }
         body.is-admin .admin-only { display: block !important; }
         body.is-admin .admin-only-flex { display: flex !important; }
+        
+        /* Efecto de carga en botón */
+        .loading { opacity: 0.7; pointer-events: none; }
     </style>
 </head>
 <body class="bg-slate-100 font-sans text-slate-900">
@@ -86,10 +88,8 @@
         <div class="bg-white w-full max-w-sm rounded-[40px] overflow-hidden shadow-2xl relative" onclick="event.stopPropagation()">
             <img id="detImg" class="w-full h-72 object-cover border-b-4 border-red-600">
             <div class="p-6 space-y-4">
-                <div class="flex justify-between items-start">
-                    <h3 id="detNom" class="font-black text-2xl uppercase text-slate-800 italic"></h3>
-                    <p id="detPre" class="text-2xl font-black text-blue-600 italic"></p>
-                </div>
+                <h3 id="detNom" class="font-black text-2xl uppercase text-slate-800 italic"></h3>
+                <p id="detPre" class="text-2xl font-black text-blue-600 italic"></p>
                 <button id="btnPedido" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black uppercase italic text-xs shadow-lg">Pedir por WhatsApp</button>
                 <div class="admin-only admin-only-flex gap-2 pt-2">
                     <button id="btnBorrar" class="flex-1 bg-red-50 text-red-500 py-4 rounded-2xl font-bold uppercase text-[10px] italic">🗑️ Borrar</button>
@@ -103,9 +103,9 @@
         const SB_KEY = 'sb_publishable_sDXHl5jEwIRktVlJbIH2Lg_EYYMd_bF';
         const client = supabase.createClient(SB_URL, SB_KEY);
         let totalProductos = [];
-        let usuarioActual = "";
 
         window.onload = async () => {
+            // Verificamos sesión al inicio
             const { data: { session } } = await client.auth.getSession();
             if (session) {
                 activarModoAdmin(session.user.email);
@@ -120,30 +120,39 @@
             const p = document.getElementById('log-pass').value;
             const btn = document.getElementById('btn-login-click');
 
-            if(!u || !p) return alert("Completá los datos");
-            btn.innerText = "ENTRANDO...";
-            btn.disabled = true;
+            if(!u || !p) return alert("Faltan datos");
 
-            const { data, error } = await client.auth.signInWithPassword({ 
-                email: u + "@craig.com", 
-                password: p 
-            });
+            // UI: Feedback visual inmediato
+            btn.innerText = "VERIFICANDO...";
+            btn.classList.add('loading');
 
-            if (error) {
-                alert("Usuario o clave incorrectos");
-                btn.innerText = "Entrar";
-                btn.disabled = false;
-            } else {
+            try {
+                const { data, error } = await client.auth.signInWithPassword({ 
+                    email: u + "@craig.com", 
+                    password: p 
+                });
+
+                if (error) throw error;
+
+                // SI TODO SALE BIEN:
                 activarModoAdmin(data.user.email);
+                // No usamos location.reload para evitar que se quede colgado
+            } catch (error) {
+                alert("Error: " + error.message);
+                btn.innerText = "Entrar";
+                btn.classList.remove('loading');
             }
         }
 
         function activarModoAdmin(email) {
-            usuarioActual = email.split('@')[0];
+            const user = email.split('@')[0];
             document.body.classList.add('is-admin');
-            document.getElementById('user-display').innerText = usuarioActual;
-            document.getElementById('btn-ir-admin').style.display = 'none';
+            const display = document.getElementById('user-display');
+            if(display) display.innerText = user;
+            
+            // Forzar limpieza visual
             document.getElementById('sec-login').classList.remove('activa');
+            document.getElementById('btn-ir-admin').style.display = 'none';
             ver('inicio');
         }
 
@@ -160,25 +169,19 @@
         }
 
         async function cargarCata() {
-            const { data } = await client.from('productos').select('*').order('id', {ascending: false});
-            totalProductos = data || [];
-            renderGrid(totalProductos);
-        }
-
-        function renderGrid(lista) {
-            document.getElementById('grid-productos').innerHTML = lista.map(p => `
-                <div onclick='abrirDetalle(${JSON.stringify(p)})' class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100 active:scale-95 transition-all">
-                    <img src="${p.imagen}" class="aspect-square w-full object-cover">
-                    <div class="p-3">
-                        <div class="text-blue-600 font-black text-xs italic">$${p.precio}</div>
-                        <div class="text-[11px] font-bold uppercase text-slate-700 italic truncate">${p.nombre}</div>
-                    </div>
-                </div>`).join('');
-        }
-
-        function filtrar() {
-            const t = document.getElementById('buscador').value.toLowerCase();
-            renderGrid(totalProductos.filter(p => p.nombre.toLowerCase().includes(t)));
+            try {
+                const { data } = await client.from('productos').select('*').order('id', {ascending: false});
+                totalProductos = data || [];
+                const grid = document.getElementById('grid-productos');
+                grid.innerHTML = totalProductos.map(p => `
+                    <div onclick='abrirDetalle(${JSON.stringify(p)})' class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100 active:scale-95 transition-all">
+                        <img src="${p.imagen}" class="aspect-square w-full object-cover">
+                        <div class="p-3">
+                            <div class="text-blue-600 font-black text-xs italic">$${p.precio}</div>
+                            <div class="text-[11px] font-bold uppercase text-slate-700 italic truncate">${p.nombre}</div>
+                        </div>
+                    </div>`).join('');
+            } catch (e) { console.log(e) }
         }
 
         function abrirDetalle(p) {
@@ -186,7 +189,7 @@
             document.getElementById('detNom').innerText = p.nombre;
             document.getElementById('detPre').innerText = '$' + p.precio;
             document.getElementById('btnPedido').onclick = () => {
-                window.open(`https://wa.me/5492804556677?text=Me interesa: ${p.nombre} ($${p.precio})`);
+                window.open(`https://wa.me/5492804556677?text=Me interesa: ${p.nombre}`);
             };
             document.getElementById('btnBorrar').onclick = () => borrar(p.id);
             document.getElementById('modalDetalle').classList.add('open');
@@ -197,13 +200,12 @@
         function calcular() {
             const g = parseFloat(document.getElementById('gramos').value) || 0;
             const m = parseFloat(document.getElementById('minutos').value) || 0;
-            // Costos base: 21 el gramo, 4.4 el minuto, x1.9 de ganancia/error, redondeado a 100
             const precio = Math.ceil(((21 * g) + (4.4 * m)) * 1.9 / 100) * 100;
             document.getElementById('precioFinal').innerText = '$' + precio;
         }
 
         async function borrar(id) {
-            if(confirm("¿Borrar definitivamente?")) {
+            if(confirm("¿Borrar?")) {
                 await client.from('productos').delete().eq('id', id);
                 cerrarDetalle();
                 await cargarCata();
